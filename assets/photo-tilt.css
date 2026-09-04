@@ -1,0 +1,5 @@
+/* photo-tilt — hover-эффект кадров (DESIGN.md §7.9).
+   Дублируется в _base.css; трансформ ставит photo-tilt.js покадрово. */
+[data-tilt]{will-change:transform;transform-origin:50% 50%}
+[data-tilt] img{backface-visibility:hidden}
+@media (prefers-reduced-motion:reduce){[data-tilt]{transform:none!important}}

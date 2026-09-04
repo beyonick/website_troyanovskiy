@@ -1,0 +1,87 @@
+/* site.css — компоненты главной. Токены и примитивы — в base.css. */
+
+/* Шапка фиксирована — якорь не должен приезжать ей под низ. */
+section[id]{scroll-margin-top:120px}
+
+/* Навигация — § 8. Fixed, без подложки и блюра.
+   Над героем mix-blend-mode:difference, дальше — обычный чёрный текст. */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:32px var(--page-margin);mix-blend-mode:difference}
+.navbar a{color:var(--on-dark);background-image:linear-gradient(var(--on-dark),var(--on-dark))}
+.navbar.solid{mix-blend-mode:normal}
+.navbar.solid a{color:var(--ink);background-image:linear-gradient(var(--ink),var(--ink))}
+.navbar .logo{display:block;line-height:0;background-image:none}
+.navbar .logo svg{display:block;color:inherit}
+.navmenu{display:flex;gap:40px;align-items:center}
+.burger{display:none;background:none;border:0;padding:12px;margin:-12px;cursor:pointer;color:inherit;font:inherit}
+.burger span{display:block;width:22px;height:1px;background:currentColor}
+.burger span+span{margin-top:6px}
+
+/* Герой — единственный edge-to-edge кадр на сайте (§ 5, исключение). */
+.hero{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--ink)}
+.herovideo{position:absolute;inset:0;cursor:pointer}
+.herovideo video{width:100%;height:100%;object-fit:cover;display:block}
+.herovideo video:fullscreen{object-fit:contain;background:var(--ink)}
+.herovideo video:-webkit-full-screen{object-fit:contain;background:var(--ink)}
+.herostrip{min-height:120px;display:flex;align-items:center;padding:32px 0}
+.herobyline-name{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:20px;color:var(--ink);margin:0}
+.herobyline-tag{font-size:15px;line-height:1.55;color:var(--body);margin:0;max-width:58ch}
+
+/* Стадии истории */
+.stages{display:flex;gap:40px;align-items:baseline;flex-wrap:wrap}
+.stage{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background-image:linear-gradient(var(--ink),var(--ink))}
+.stage.on{color:var(--ink);background-size:100% 1px}
+
+/* Список историй — § 7.4 */
+.bigindex{border-top:1px solid var(--hairline);position:relative}
+.brow{position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;gap:var(--gutter);padding:34px 0;border-bottom:1px solid var(--hairline);transition:opacity 300ms var(--ease-ui);background-image:none}
+.bigindex:hover .brow,.voicewrap:hover .voice{opacity:.35}
+.bigindex .brow:hover,.voicewrap .voice:hover{opacity:1;background-image:none}
+.bname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(36px,4.6vw,72px);line-height:1;letter-spacing:-.015em;color:var(--ink);display:inline-block;transition:transform 300ms var(--ease-ui)}
+.brow:hover .bname{transform:translateX(16px)}
+.bmeta{display:flex;gap:32px;align-items:baseline}
+.thumb-follow{position:fixed;overflow:hidden;pointer-events:none;z-index:1;opacity:0;transition:opacity 220ms var(--ease-ui)}
+.thumb-follow .ph{width:100%;height:100%}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gutter);align-items:end}
+
+.voicewrap{position:relative}
+.voice{position:relative;z-index:2;padding:40px 0;border-top:1px solid var(--hairline);transition:opacity 300ms var(--ease-ui)}
+.voice:last-of-type{border-bottom:1px solid var(--hairline)}
+
+/* Футер обнажается, а не появляется — § 7.5. Он лежит под страницей;
+   уезжает вверх сам контент. .footshell — распорка в высоту футера, чтобы
+   до конца страницы можно было доскроллить. */
+main{position:relative;z-index:1;background:var(--canvas)}
+.footshell{position:relative;z-index:0}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:0;border-top:1px solid var(--hairline);padding:96px var(--page-margin) 64px;background:var(--canvas)}
+@media (prefers-reduced-motion:reduce){
+  .foot{position:static}
+  .footshell{display:none}
+}
+.footgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
+
+/* Кадр в руках — § 7.9. Рамка выходит поверх соседнего контента. */
+.mask[data-tilt]{overflow:visible;position:relative;z-index:1}
+.mask[data-tilt] .inner{overflow:hidden}
+.mask[data-tilt]:hover{z-index:6}
+
+/* Адаптив — § 11 */
+@media (max-width:1024px){
+  .grid>*{grid-column:1 / span 12!important;margin-top:0!important;margin-left:0!important;width:auto!important}
+  .grid{gap:48px}
+  .sec .grid[style*="margin-top"]{margin-top:64px!important}
+}
+@media (max-width:768px){
+  .navbar{padding:20px var(--page-margin)}
+  .navmenu{position:fixed;inset:0;background:var(--canvas);flex-direction:column;justify-content:center;gap:32px;display:none;mix-blend-mode:normal}
+  .navmenu a{color:var(--ink);background-image:linear-gradient(var(--ink),var(--ink));font-size:14px}
+  .navbar.open{mix-blend-mode:normal}
+  .navbar.open .navmenu{display:flex}
+  .burger{display:block;min-width:44px;min-height:44px}
+  .stats{grid-template-columns:1fr;gap:48px}
+  .stages{gap:20px}
+  .footgrid>*{grid-column:1 / span 12!important;align-items:flex-start!important;text-align:left!important;margin-bottom:40px}
+  .bmeta{gap:16px;flex-wrap:wrap}
+  .brow{flex-direction:column;align-items:flex-start;gap:12px}
+  .thumb-follow{display:none}
+}
