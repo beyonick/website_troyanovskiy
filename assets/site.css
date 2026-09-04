@@ -16,9 +16,29 @@ section[id]{scroll-margin-top:120px}
 .burger span{display:block;width:22px;height:1px;background:currentColor}
 .burger span+span{margin-top:6px}
 
-/* Герой — единственный edge-to-edge кадр на сайте (§ 5, исключение). */
-.hero{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--ink)}
-.herovideo{position:absolute;inset:0;cursor:pointer}
+/* Прелоадер — § 8. Белый холст, имя антиквой в две строки, вход и уход маской
+   (§ 7.1). Больше на нём ничего. Панель уезжает вверх в собственную маску,
+   открывая герой; строки имени уходят туда же. */
+.preload{position:fixed;inset:0;z-index:100;background:var(--canvas);
+  display:flex;align-items:center;justify-content:center;padding:var(--page-margin);
+  clip-path:inset(0 0 0 0);transition:clip-path 800ms var(--ease-reveal)}
+.preload.gone{clip-path:inset(0 0 100% 0);pointer-events:none}
+.preload-name{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;
+  font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--ink)}
+.pl-mask{display:block;overflow:hidden}
+.pl-mask>span{display:block;transform:translateY(105%);transition:transform 900ms var(--ease-reveal)}
+.pl-mask:nth-child(2)>span{transition-delay:70ms}
+.preload.in .pl-mask>span{transform:translateY(0)}
+.preload.out .pl-mask>span{transform:translateY(-105%);transition-duration:700ms;transition-delay:0ms}
+@media (prefers-reduced-motion:reduce){
+  .preload{transition:none!important}
+  .pl-mask>span{transform:none!important;transition:none!important}
+}
+
+/* Герой (§ 5, исключение). Секция на всю высоту вьюпорта; само видео с
+   2026-09-04 отступает со всех сторон на --hero-inset, поле — белый холст. */
+.hero{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--canvas)}
+.herovideo{position:absolute;inset:var(--hero-inset);cursor:pointer}
 .herovideo video{width:100%;height:100%;object-fit:cover;display:block}
 .herovideo video:fullscreen{object-fit:contain;background:var(--ink)}
 .herovideo video:-webkit-full-screen{object-fit:contain;background:var(--ink)}
@@ -31,13 +51,16 @@ section[id]{scroll-margin-top:120px}
 .stage{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background-image:linear-gradient(var(--ink),var(--ink))}
 .stage.on{color:var(--ink);background-size:100% 1px}
 
-/* Список историй — § 7.4 */
-.bigindex{border-top:1px solid var(--hairline);position:relative}
-.brow{position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;gap:var(--gutter);padding:34px 0;border-bottom:1px solid var(--hairline);transition:opacity 300ms var(--ease-ui);background-image:none}
+/* Список историй — § 7.4. Разделительные линии — служебные (§5), не акцент;
+   под ховер картинкой гаснут, чтобы ничего не спорило с фото. */
+.bigindex{border-top:1px solid var(--hairline);position:relative;transition:border-color 300ms var(--ease-ui)}
+.bigindex:hover{border-top-color:transparent}
+.brow{position:relative;z-index:2;display:flex;align-items:baseline;justify-content:space-between;gap:var(--gutter);padding:34px 0;border-bottom:1px solid var(--hairline);transition:opacity 300ms var(--ease-ui),border-color 300ms var(--ease-ui);background-image:none}
+.bigindex:hover .brow{border-bottom-color:transparent}
 .bigindex:hover .brow,.voicewrap:hover .voice{opacity:.35}
 .bigindex .brow:hover,.voicewrap .voice:hover{opacity:1;background-image:none}
 .bname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(36px,4.6vw,72px);line-height:1;letter-spacing:-.015em;color:var(--ink);display:inline-block;transition:transform 300ms var(--ease-ui)}
-.brow:hover .bname{transform:translateX(16px)}
+.brow:hover .bname{transform:translateX(10px)}
 .bmeta{display:flex;gap:32px;align-items:baseline}
 .thumb-follow{position:fixed;overflow:hidden;pointer-events:none;z-index:1;opacity:0;transition:opacity 220ms var(--ease-ui)}
 .thumb-follow .ph{width:100%;height:100%}

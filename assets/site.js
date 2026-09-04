@@ -56,6 +56,71 @@
     });
   }
 
+  /* — Прелоадер (§ 8). Держит первый экран, пока грузится видео героя.
+       Вход и уход — маской (§ 7.1). Один раз за сессию: возврат внутри той же
+       сессии не блокируем. Снимается по canplay видео И минимальному времени
+       показа; жёсткий потолок MAX, чтобы никого не держать на медленной сети. — */
+
+  function bindPreload() {
+    var pl = document.getElementById('preload');
+    if (!pl) return;
+    var html = document.documentElement;
+
+    var seen = false;
+    try { seen = sessionStorage.getItem('pl') === '1'; } catch (e) {}
+    if (seen) { if (pl.parentNode) pl.parentNode.removeChild(pl); return; }
+
+    var MIN = 1400, MAX = 6000, t0 = Date.now(), done = false;
+    html.style.overflow = 'hidden';
+    requestAnimationFrame(function () { pl.classList.add('in'); });
+
+    function finish() {
+      if (done) return;
+      done = true;
+      try { sessionStorage.setItem('pl', '1'); } catch (e) {}
+      pl.classList.add('out');
+      setTimeout(function () { pl.classList.add('gone'); }, 240);
+
+      var removed = false;
+      function drop() {
+        if (removed) return;
+        removed = true;
+        if (pl.parentNode) pl.parentNode.removeChild(pl);
+        html.style.overflow = '';
+        if (heroVideo) {
+          try { heroVideo.currentTime = 0; } catch (e) {}
+          var p = heroVideo.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      }
+      pl.addEventListener('transitionend', function (e) {
+        if (e.target === pl && e.propertyName === 'clip-path') drop();
+      });
+      setTimeout(drop, 1200); // страховка, если transitionend не придёт
+    }
+
+    function ready() {
+      setTimeout(finish, Math.max(0, MIN - (Date.now() - t0)));
+    }
+
+    if (reduce) { setTimeout(finish, 600); return; }
+
+    if (heroVideo && heroVideo.readyState >= 3) {
+      ready();
+    } else if (heroVideo) {
+      var on = function () {
+        heroVideo.removeEventListener('canplay', on);
+        heroVideo.removeEventListener('canplaythrough', on);
+        ready();
+      };
+      heroVideo.addEventListener('canplay', on);
+      heroVideo.addEventListener('canplaythrough', on);
+    } else {
+      ready();
+    }
+    setTimeout(finish, MAX);
+  }
+
   /* — Навигация: difference над героем, обычный чёрный дальше (§ 8) — */
 
   function bindNav() {
@@ -88,13 +153,16 @@
   /* — Раскрытие кадров и счётчики по появлению в кадре (§ 7.1, § 7.3) — */
 
   function bindReveals() {
-    var items = Array.prototype.slice.call(document.querySelectorAll('.reveal, .rise'));
+    var once = Array.prototype.slice.call(document.querySelectorAll('.reveal, .rise'));
+    var fu = Array.prototype.slice.call(document.querySelectorAll('.fu'));
+
     if (reduce || !('IntersectionObserver' in window)) {
-      items.forEach(function (el) { el.classList.add('in'); });
+      once.concat(fu).forEach(function (el) { el.classList.add('in'); });
       return;
     }
 
-    var left = items.length;
+    // Кадры и счётчики — один раз и навсегда: маска не закрывается обратно.
+    var left = once.length;
     function reveal(el) {
       if (el.classList.contains('in')) return;
       el.classList.add('in');
@@ -108,7 +176,7 @@
         io.unobserve(e.target);
       });
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
-    items.forEach(function (el) { io.observe(el); });
+    once.forEach(function (el) { io.observe(el); });
 
     // Страховка от первого срабатывания IntersectionObserver: он всегда
     // вызывается один раз сразу при подписке, для всех целей и без единого
@@ -118,14 +186,26 @@
     // навсегда зажатый в clip-path: inset(100%), недопустим.
     function sweep() {
       if (!left) return;
-      items.forEach(function (el) {
+      once.forEach(function (el) {
         if (el.classList.contains('in')) return;
         var r = el.getBoundingClientRect();
-        if (r.bottom > 0 && r.top < innerHeight) reveal(el);
+        // Всё, что в кадре ИЛИ уже прокручено выше, — показываем. Элемент,
+        // навсегда застрявший невидимым (мгновенный скролл, загрузка с якоря),
+        // недопустим.
+        if (r.top < innerHeight * 0.98) reveal(el);
       });
       if (left) setTimeout(sweep, 600);
     }
     setTimeout(sweep, 600);
+
+    // Текст (§ 7 п. 1-бис) — фейд работает в обе стороны: класс .in снимается,
+    // когда блок выходит из кадра, и появляется заново при возврате.
+    var ioFu = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        e.target.classList.toggle('in', e.isIntersecting);
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.02 });
+    fu.forEach(function (el) { ioFu.observe(el); });
   }
 
   /* — Кадр за курсором в списках (§ 7.4) — */
@@ -229,6 +309,7 @@
 
   function start() {
     setHeroSource();
+    bindPreload();
     keepHeroAlive();
     bindHeroExpand();
     bindNav();

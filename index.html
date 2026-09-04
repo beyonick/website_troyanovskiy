@@ -11,12 +11,26 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap">
+<!-- Хранилище видео героя: ранний коннект, чтобы буфер пошёл сразу (см. config.js). -->
+<link rel="preconnect" href="https://378927d7-40c7-486c-a37f-a3b5c4f454a6.selstorage.ru" crossorigin>
+<link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Inter:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/photo-tilt.css">
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+
+<!-- Прелоадер — § 8. Только имя антиквой в две строки; входит и уходит маской
+     (§ 7.1). Держит первый экран, пока грузится видео героя; один раз за сессию.
+     Логика — bindPreload() в site.js, снимается по canplay + минимальному
+     времени, с жёстким потолком ожидания. -->
+<div class="preload" id="preload">
+  <p class="preload-name" aria-label="Иван Трояновский">
+    <span class="pl-mask"><span>Иван</span></span>
+    <span class="pl-mask"><span>Трояновский</span></span>
+  </p>
+</div>
 
 <header class="navbar">
   <a class="logo" href="/" aria-label="Иван Трояновский">
@@ -44,13 +58,13 @@
   <!-- Герой — единственное место, где кадр касается края экрана (DESIGN.md § 5). -->
   <section class="hero">
     <div class="herovideo mask" title="Развернуть">
-      <video autoplay muted loop playsinline preload="auto" poster="img/hero-poster.jpg"
+      <video autoplay muted loop playsinline preload="auto" fetchpriority="high" poster="img/hero-poster.jpg"
              aria-label="Пара на видео, снятом Иваном Трояновским"></video>
     </div>
   </section>
 
   <section class="wrap">
-    <div class="herostrip">
+    <div class="herostrip fu">
       <div class="grid" style="width:100%;align-items:baseline">
         <div style="grid-column:1 / span 4">
           <p class="herobyline-name">Иван Трояновский</p>
@@ -63,7 +77,7 @@
   </section>
 
   <section class="sec wrap" id="istorii">
-    <div class="grid" style="margin-bottom:56px;align-items:baseline">
+    <div class="grid fu" style="margin-bottom:56px;align-items:baseline">
       <div style="grid-column:1 / span 3"><p class="lbl">Истории</p></div>
       <div style="grid-column:5 / span 5">
         <div class="stages">
@@ -77,7 +91,7 @@
       <div style="grid-column:11 / span 2;text-align:right"><a class="nav" href="#istorii">Показать все · 568</a></div>
     </div>
 
-    <div class="bigindex">
+    <div class="bigindex fu">
       <a class="brow" href="#istorii">
         <span class="bname">Аня и Кирилл</span>
         <span class="bmeta"><span class="cap" style="margin:0">Сближение</span><span class="cap" style="margin:0">Петербург</span><time class="cap" style="margin:0" datetime="2024">2024</time></span>
@@ -113,7 +127,7 @@
   </section>
 
   <section class="sec wrap">
-    <div class="grid">
+    <div class="grid fu">
       <div style="grid-column:1 / span 3">
         <p class="lbl">Акт I</p>
         <p class="lbl" style="color:var(--ink);margin-top:8px">Первый взгляд</p>
@@ -140,20 +154,20 @@
 
   <section class="sec wrap" id="manifest">
     <div class="grid">
-      <div style="grid-column:1 / span 2"><p class="lbl">Манифест</p></div>
+      <div style="grid-column:1 / span 2"><p class="lbl fu">Манифест</p></div>
       <div style="grid-column:4 / span 7;display:flex;flex-direction:column;gap:48px">
-        <p class="lead">Я не расставляю людей и не прошу посмотреть в камеру. Первые двадцать минут почти не снимаю — хожу рядом, пока про меня не забывают. Дальше начинается то, ради чего меня позвали.</p>
-        <p class="lead">Мне важно, что было до. Как познакомились, кто первый написал, из-за чего чуть не разошлись на втором году. Без этого получаются красивые чужие люди.</p>
+        <p class="lead fu">Я не расставляю людей и не прошу посмотреть в камеру. Первые двадцать минут почти не снимаю — хожу рядом, пока про меня не забывают. Дальше начинается то, ради чего меня позвали.</p>
+        <p class="lead fu">Мне важно, что было до. Как познакомились, кто первый написал, из-за чего чуть не разошлись на втором году. Без этого получаются красивые чужие люди.</p>
         <div class="mask reveal" data-tilt style="width:56%"><div class="inner ph" style="aspect-ratio:4/5"><img src="img/v14.jpg" alt="Она смеётся, завёрнутая в простыню, у окна" loading="lazy"></div></div>
-        <p class="lead">Снимаю на плёнку и на цифру — смотрю по свету и по тому, сколько у нас времени. Плёнку отдаю как есть, одним роликом подряд. Нейросети не использую: ни для дорисовки, ни для замены лиц, ни для «улучшения» кадра.</p>
-        <p class="lead">За 18 лет — 568 историй по всему миру. Восемь пар я снимал дважды: сначала свадьбу, потом с детьми. Ради второго раза всё и делается.</p>
+        <p class="lead fu">Снимаю на плёнку и на цифру — смотрю по свету и по тому, сколько у нас времени. Плёнку отдаю как есть, одним роликом подряд. Нейросети не использую: ни для дорисовки, ни для замены лиц, ни для «улучшения» кадра.</p>
+        <p class="lead fu">За 18 лет — 568 историй по всему миру. Восемь пар я снимал дважды: сначала свадьбу, потом с детьми. Ради второго раза всё и делается.</p>
         <div class="mask reveal d2" data-tilt style="width:56%;align-self:flex-end"><div class="inner ph" style="aspect-ratio:3/2"><img src="img/q06.jpg" alt="Пара целуется среди белых цветов" loading="lazy"></div></div>
       </div>
     </div>
   </section>
 
   <section class="sec wrap">
-    <div class="grid" style="margin-bottom:64px">
+    <div class="grid fu" style="margin-bottom:64px">
       <div style="grid-column:1 / span 3"><p class="lbl">Плёнка</p></div>
       <div style="grid-column:5 / span 7"><h3 class="h3">Одна плёнка целиком — без выбора «лучшего».</h3></div>
     </div>
@@ -168,12 +182,12 @@
         <div class="mask reveal d2" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/lf03.jpg" alt="Подушечный бой в постели" loading="lazy"></div></div>
       </div>
     </div>
-    <p class="cap" style="margin-top:24px">Один ролик подряд — без ретуши и пересъёмки</p>
+    <p class="cap fu" style="margin-top:24px">Один ролик подряд — без ретуши и пересъёмки</p>
   </section>
 
   <section class="sec">
     <div class="wrap">
-      <div class="grid" style="margin-bottom:96px">
+      <div class="grid fu" style="margin-bottom:96px">
         <div style="grid-column:1 / span 3">
           <p class="lbl">Акт II</p>
           <p class="lbl" style="color:var(--ink);margin-top:8px">Сближение</p>
@@ -183,7 +197,8 @@
         </div>
       </div>
       <figure style="margin:0">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
+        <!-- Анимация снята по запросу (2026-09-04): кадр без раскрытия маской. -->
+        <div class="mask" data-tilt><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
         <figcaption class="cap" style="margin-top:12px">Москва, ноябрь 2023 · Марина и Тимур, за два месяца до</figcaption>
       </figure>
     </div>
@@ -198,7 +213,7 @@
           <figcaption class="cap" style="margin-left:var(--page-margin)">Петербург, 2022 · за минуту до выхода</figcaption>
         </figure>
       </div>
-      <div style="grid-column:7 / span 6;padding-bottom:120px">
+      <div class="fu" style="grid-column:7 / span 6;padding-bottom:120px">
         <p class="lbl">Акт III</p>
         <p class="lbl" style="color:var(--ink);margin-top:8px;margin-bottom:48px">Свадьба</p>
         <h2 class="h2">Один день, к которому шли годами. Я прихожу за час до и ухожу последним.</h2>
@@ -208,7 +223,7 @@
   </section>
 
   <section class="sec wrap">
-    <p class="lbl" style="margin-bottom:64px">Коротко</p>
+    <p class="lbl fu" style="margin-bottom:64px">Коротко</p>
     <div class="stats">
       <div>
         <span class="tmask num"><span class="rise">18</span></span>
@@ -226,7 +241,7 @@
   </section>
 
   <section class="sec wrap">
-    <div class="grid" style="margin-bottom:96px">
+    <div class="grid fu" style="margin-bottom:96px">
       <div style="grid-column:1 / span 3">
         <p class="lbl">Акт IV</p>
         <p class="lbl" style="color:var(--ink);margin-top:8px">Семья</p>
@@ -252,8 +267,8 @@
   </section>
 
   <section class="sec wrap">
-    <p class="lbl" style="margin-bottom:64px">Говорят пары</p>
-    <div class="voicewrap">
+    <p class="lbl fu" style="margin-bottom:64px">Говорят пары</p>
+    <div class="voicewrap fu">
       <div class="voice">
         <p class="q">«Мы боялись, что будет неловко. Через полчаса я поймала себя на том, что рассказываю Ване про бабушку, а он в это время снимал. Неловко так и не стало».</p>
         <p class="cap">Аня и Кирилл · Петербург · 2024</p>
@@ -275,7 +290,7 @@
   <section class="sec wrap" id="masterclass">
     <div class="grid">
       <div style="grid-column:1 / span 3"><p class="lbl">Второе</p></div>
-      <div style="grid-column:5 / span 7">
+      <div class="fu" style="grid-column:5 / span 7">
         <h2 class="h2">Иногда я объясняю, как это устроено.</h2>
         <p class="txt" style="margin-top:48px">Раз в несколько месяцев собираю небольшую группу и разбираю не настройки, а то, что происходит между людьми до нажатия на кнопку. Как войти в чужой день и не сломать его. Как разговаривать, чтобы перестали позировать. Что делать, когда света нет, а снимать надо.</p>
         <p class="cap" style="margin-top:32px">[ДАТА] · [МЕСТО] · [ЦЕНА] · осталось [МЕСТ] мест</p>
@@ -286,7 +301,7 @@
 
   <section class="sec wrap" id="napisat">
     <div class="grid">
-      <div style="grid-column:1 / span 6">
+      <div class="fu" style="grid-column:1 / span 6">
         <h2 class="h2">Напишите мне.</h2>
         <p class="txt" style="margin-top:40px">Четыре шага: что снимаем, город, дата, как вас зовут. Минута времени, ответ в течение суток.</p>
         <p style="margin-top:56px"><a class="nav" href="#napisat">Оставить заявку</a></p>
