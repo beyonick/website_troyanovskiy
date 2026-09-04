@@ -121,6 +121,17 @@
     setTimeout(finish, MAX);
   }
 
+  /* — Имя героя: та же техника маски, что у прелоадера, запускается сразу — */
+
+  function bindHeroName() {
+    var el = document.getElementById('heroname');
+    if (!el) return;
+    if (reduce) { el.classList.add('in'); return; }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { el.classList.add('in'); });
+    });
+  }
+
   /* — Навигация: difference над героем, обычный чёрный дальше (§ 8) — */
 
   function bindNav() {
@@ -314,6 +325,7 @@
     bindPreload();
     keepHeroAlive();
     bindHeroExpand();
+    bindHeroName();
     bindNav();
     bindReveals();
     bindFollow('.bigindex', '.brow');
