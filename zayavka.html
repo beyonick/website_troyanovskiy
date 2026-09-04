@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Заявка на съёмку — Иван Трояновский</title>
+<meta name="description" content="Четыре коротких шага: что снимаем, город, дата и время, как вас зовут. Отвечаю сам, обычно в тот же день.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Заявка на съёмку — Иван Трояновский">
+<meta property="og:description" content="Четыре коротких шага. Отвечаю сам, обычно в тот же день.">
+<meta property="og:image" content="img/hero-poster.jpg">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/booking.css">
+</head>
+<body>
+
+<!-- Прелоадера здесь нет: он держит первый экран, пока грузится видео героя
+     (§ 8), а на странице заявки героя нет. Навигация сразу solid — под ней
+     белый холст, а не фотография (§ 8). -->
+<header class="navbar solid">
+  <a class="logo" href="/" aria-label="Иван Трояновский">
+    <svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M16.4 26.6 C 9.7 21.7, 3.1 17.3, 4.1 11.1 C 4.8 6.9, 9.7 5.2, 13.2 8.2 C 14.4 9.3, 15.3 10.8, 15.9 12.1 C 16.6 10.5, 17.8 8.7, 19.4 7.6 C 23.2 5, 27.7 7.3, 27.4 11.9 C 27, 18.2, 20.5 22, 16.4 26.6 Z"/>
+      <path d="M3 23 L 26 5"/>
+      <path d="M26 5 L 21.1 6 M26 5 L 25.1 10.7"/>
+      <path d="M3 23 L 6.7 22 M3 23 L 5 26.2"/>
+    </svg>
+  </a>
+  <nav class="navmenu" id="navmenu">
+    <a class="nav" href="/#istorii">Истории</a>
+    <a class="nav" href="/#masterclass">Мастер-класс</a>
+    <a class="nav" href="/#manifest">Обо мне</a>
+    <a class="nav" href="/">Закрыть</a>
+  </nav>
+  <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="navmenu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<main class="wrap bk">
+  <div class="bk-grid">
+
+    <aside class="bk-aside">
+      <h1 class="h2 bk-title">Заявка<br>на съёмку</h1>
+      <p class="txt" style="margin-top:32px;font-size:16px">Четыре коротких шага. Отвечаю сам, обычно в тот же день.</p>
+
+      <!-- Mobile: сайдбар схлопывается, шаги превращаются в полосу (§ 11). -->
+      <div class="progress" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+
+      <nav class="bk-steps" aria-label="Шаги заявки">
+        <div class="stepitem on" data-stepitem="1" aria-current="step"><p class="lbl">01 — Съёмка</p></div>
+        <div class="stepitem" data-stepitem="2"><p class="lbl">02 — Город</p></div>
+        <div class="stepitem" data-stepitem="3"><p class="lbl">03 — Дата и время</p></div>
+        <div class="stepitem" data-stepitem="4"><p class="lbl">04 — О вас</p></div>
+      </nav>
+    </aside>
+
+    <!-- Шаги рисует booking.js: состояние формы живёт в одном месте. -->
+    <div class="bk-main" id="bkmain"></div>
+
+    <noscript>
+      <div class="bk-main">
+        <h2 class="h3">Форма не работает без JavaScript.</h2>
+        <p class="txt" style="margin-top:32px">Напишите мне напрямую — я отвечаю на письма сам:
+          <a href="mailto:[ПОЧТА]">[ПОЧТА]</a>, <a href="tel:[ТЕЛЕФОН]">[ТЕЛЕФОН]</a>.
+          Что снимаем, город, примерная дата и как к вам обращаться — этого хватит.</p>
+      </div>
+    </noscript>
+
+  </div>
+  <!-- Воздух до футера лежит внутри main: у main белый фон, и футер
+       обнажается только когда контент уезжает вверх (§ 7.5). -->
+  <div style="height:192px"></div>
+</main>
+
+<!-- Футер обнажается, а не появляется (§ 7.5). -->
+<div class="footshell"></div>
+<footer class="foot">
+  <div class="footgrid">
+    <div style="grid-column:1 / span 4">
+      <p class="h3" style="font-size:40px">Иван Трояновский</p>
+      <p class="cap">Инди-фотограф</p>
+    </div>
+    <div style="grid-column:6 / span 3;display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <p class="lbl">Связь</p>
+      <a class="nav" href="mailto:[ПОЧТА]">[ПОЧТА]</a>
+      <a class="nav" href="tel:[ТЕЛЕФОН]">[ТЕЛЕФОН]</a>
+    </div>
+    <div style="grid-column:9 / span 2;display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <p class="lbl">Смотреть</p>
+      <a class="nav" href="https://instagram.com/ivantroyanovsky" rel="noopener">Instagram</a>
+      <a class="nav" href="https://vk.ru/ivantroyanovsky" rel="noopener">VK</a>
+    </div>
+    <div style="grid-column:11 / span 2;display:flex;flex-direction:column;gap:16px;align-items:flex-end">
+      <p class="lbl">Язык</p>
+      <a class="nav" href="/en/">RU / EN</a>
+    </div>
+  </div>
+  <div style="height:96px"></div>
+  <div class="footgrid">
+    <div style="grid-column:1 / span 12"><p class="cap" style="margin:0">© 2026</p></div>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/busy.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/booking.js"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+/* booking.css — заявка на съёмку. Токены и примитивы — в base.css,
+   общие компоненты страницы (навигация, футер) — в site.css.
+   Ноль скруглений, ноль теней, ноль серых плашек — § 3, § 8. */
+
+/* Высота не меньше экрана: футер лежит под страницей (§ 7.5) и должен
+   обнажаться на скролле, а не выглядывать снизу на коротком шаге. */
+.bk{padding-top:160px;padding-bottom:96px;min-height:100svh}
+.bk-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter);align-items:start}
+.bk-aside{grid-column:1 / span 4;position:sticky;top:120px}
+.bk-main{grid-column:6 / span 7;min-height:60vh}
+.bk-title{font-size:clamp(40px,4.4vw,64px)}
+
+/* Шаги слева — линейки, а не плашки. Активный шаг держит чёрный волосок. */
+.bk-steps{margin-top:64px;border-bottom:1px solid var(--hairline)}
+.stepitem{padding:16px 0;border-top:1px solid var(--hairline);transition:border-color 300ms var(--ease-ui)}
+.stepitem .lbl{transition:color 300ms var(--ease-ui)}
+.stepitem.on{border-top-color:var(--ink)}
+.stepitem.on .lbl,.stepitem.done .lbl{color:var(--ink)}
+.stepitem.done{border-top-color:var(--ink)}
+
+/* Прогресс — только на mobile, где сайдбар схлопывается (§ 11). */
+.progress{display:none;gap:6px;margin-top:20px}
+.progress span{flex:1;height:1px;background:var(--hairline);transition:background-color 300ms var(--ease-ui)}
+.progress span.on{background:var(--ink)}
+
+/* Выбор — строка с растущим отступом, не карточка (§ 8: карточек нет). */
+.opt{display:flex;align-items:baseline;justify-content:space-between;gap:var(--gutter);width:100%;text-align:left;
+  padding:26px 0;border:0;border-bottom:1px solid var(--hairline);background:transparent;cursor:pointer;
+  font-family:inherit;color:var(--body);transition:padding-left 300ms var(--ease-ui),border-color 300ms var(--ease-ui)}
+.opt:hover{padding-left:16px}
+.opt:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+.optname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:-.015em;color:var(--ink)}
+.opt[aria-pressed="true"]{border-bottom-color:var(--ink)}
+.opt[aria-pressed="true"] .optname{font-weight:400}
+.opt[aria-pressed="true"] .mark{color:var(--ink)}
+.mark{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:right}
+
+/* Календарь — § 8. Сетка 7×n, ячейка квадратная, радиус 0. */
+.monthnav{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:24px}
+.monthname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:32px;line-height:1.05;color:var(--ink)}
+.calhead{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--hairline)}
+.calhead span{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 0 12px 8px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cell{position:relative;aspect-ratio:1/1;border:0;border-right:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  background:transparent;padding:10px;font-family:inherit;font-size:15px;color:var(--body);text-align:left;cursor:pointer;display:block}
+.cell:hover{outline:1px solid var(--ink);outline-offset:-1px}
+.cell:focus-visible{outline:1px solid var(--ink);outline-offset:-2px}
+.cell.on{background:var(--ink);color:var(--on-dark)}
+.cell.on:hover{outline:0}
+/* Занятая дата — серая, зачёркнута волоском, курсор не обещает клик. */
+.cell.busy{color:var(--muted);cursor:not-allowed;
+  background-image:linear-gradient(to top right,transparent calc(50% - 1px),var(--hairline) calc(50% - 1px),var(--hairline) calc(50% + 1px),transparent calc(50% + 1px))}
+.cell.busy:hover{outline:0}
+/* Прошедший день — просто гаснет, без зачёркивания: занято и вчера не одно и то же. */
+.cell.past{color:var(--hairline);cursor:default}
+.cell.past:hover{outline:0}
+.cell.void{border-right:0;border-bottom:0;cursor:default;pointer-events:none}
+
+/* Слоты дня: утро / день / золотой час */
+.slots{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
+.slot{padding:18px 24px;border:1px solid var(--hairline);background:transparent;font-family:inherit;
+  font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--body);cursor:pointer;
+  min-height:44px;transition:border-color 200ms var(--ease-ui)}
+.slot:hover{border-color:var(--ink)}
+.slot:focus-visible{outline:1px solid var(--ink);outline-offset:2px}
+.slot[aria-pressed="true"]{background:var(--ink);color:var(--on-dark);border-color:var(--ink)}
+
+/* Поля — § 8. Без рамки, только нижняя линейка; на фокусе чёрная. Высота 56px. */
+.fields{display:flex;flex-direction:column;gap:44px}
+.fieldwrap{display:flex;flex-direction:column;gap:10px}
+.field{border:0;border-bottom:1px solid var(--hairline);height:56px;width:100%;font-family:inherit;font-size:17px;
+  color:var(--body);background:transparent;padding:0;outline:none;border-radius:0;transition:border-color 200ms var(--ease-ui)}
+.field:focus{border-bottom-color:var(--ink)}
+.field[aria-invalid="true"]{border-bottom-color:var(--ink)}
+
+/* Ошибка — не цвет, а чёрная линейка и подпись 11px капсом (§ 3). */
+.err{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:0}
+
+.summary{display:flex;flex-direction:column;border-top:1px solid var(--hairline);margin-top:64px}
+.srow{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--hairline)}
+.srow span{margin:0}
+
+.navrow{display:flex;align-items:center;gap:40px;margin-top:64px;flex-wrap:wrap}
+.linkbtn{border:0;background:transparent;padding:15px 0;margin:-15px 0;font-family:inherit;font-size:12px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink);cursor:pointer;
+  background-image:linear-gradient(var(--ink),var(--ink));background-repeat:no-repeat;
+  background-position:0 calc(100% - 15px);background-size:0 1px;transition:background-size 200ms var(--ease-ui)}
+.linkbtn:hover{background-size:100% 1px}
+.linkbtn:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+.linkbtn[disabled]{color:var(--muted);cursor:not-allowed;background-image:none}
+.btn[disabled]{opacity:.45;cursor:progress}
+
+/* Загрузка — § BookingStates 03. Спиннера нет: волосок под кнопкой идёт слева
+   направо. При reduce линия просто стоит. */
+.bar{height:1px;background:var(--hairline);margin-top:16px;overflow:hidden}
+.bar::after{content:"";display:block;height:1px;width:40%;background:var(--ink);transform:translateX(-100%);
+  animation:bkbar 1200ms var(--ease-ui) infinite}
+@keyframes bkbar{to{transform:translateX(350%)}}
+
+/* Заголовок шага принимает фокус программно, чтобы скринридер прочитал новый
+   шаг. Рамка фокуса на нём не нужна: это не управляющий элемент, а системная
+   жёлтая обводка — цвет, которого в системе нет (§ 3). */
+.bk-main h2[tabindex]:focus{outline:none}
+
+/* Появление шага — тихий фейд из § 7 п. 1-бис, тот же .fu, но одноразовый. */
+.stepbody{opacity:0;transform:translateY(10px);animation:bkin 900ms var(--ease-reveal) forwards}
+@keyframes bkin{to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .bar::after{animation:none;transform:none;width:100%}
+  .stepbody{animation:none;opacity:1;transform:none}
+}
+
+/* § 11. Сайдбар схлопывается, шаги заменяются полосой прогресса,
+   кнопка во всю ширину, тач-цели 44px. */
+@media (max-width:1024px){
+  .bk{padding-top:120px}
+  .bk-grid{grid-template-columns:1fr;gap:48px}
+  .bk-aside{grid-column:1;position:static;top:auto}
+  .bk-main{grid-column:1}
+  .bk-steps{display:none}
+  .progress{display:flex}
+  .monthname{font-size:24px}
+}
+@media (max-width:768px){
+  .opt{padding:22px 0;min-height:44px}
+  .optname{font-size:30px}
+  .mark{max-width:40%}
+  .cell{padding:7px;font-size:14px}
+  .calhead span{padding:0 0 10px 6px}
+  .slots{flex-direction:column;gap:12px}
+  .slot{display:block;width:100%;text-align:left}
+  .navrow{flex-direction:column;align-items:stretch;gap:24px;margin-top:48px}
+  .navrow .btn{display:block;width:100%;text-align:center}
+  .navrow .linkbtn{text-align:center;background-position:50% calc(100% - 15px)}
+}

@@ -88,11 +88,15 @@ main{position:relative;z-index:1;background:var(--canvas)}
 .mask[data-tilt] .inner{overflow:hidden}
 .mask[data-tilt]:hover{z-index:6}
 
+/* Вылет за край (§5) — только на desktop, где рядом есть соседняя колонка. */
+.bleed{width:calc(100% + 64px)}
+
 /* Адаптив — § 11 */
 @media (max-width:1024px){
-  .grid>*{grid-column:1 / span 12!important;margin-top:0!important;margin-left:0!important;width:auto!important}
-  .grid{gap:48px}
+  .grid{grid-template-columns:1fr;gap:48px}
+  .grid>*{grid-column:1!important;margin-top:0!important;margin-left:0!important;width:auto!important}
   .sec .grid[style*="margin-top"]{margin-top:64px!important}
+  .bleed{width:100%!important}
 }
 @media (max-width:768px){
   .navbar{padding:20px var(--page-margin)}

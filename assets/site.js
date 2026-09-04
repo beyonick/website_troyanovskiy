@@ -129,8 +129,10 @@
     if (!bar) return;
 
     function sync() {
-      var edge = hero ? hero.offsetHeight - 80 : 600;
-      bar.classList.toggle('solid', window.scrollY > edge);
+      // Страница без героя (заявка) — под навигацией всегда белый холст,
+      // difference там дал бы белый текст на белом. Такая шапка сразу solid.
+      if (!hero) { bar.classList.add('solid'); return; }
+      bar.classList.toggle('solid', window.scrollY > hero.offsetHeight - 80);
     }
     window.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
