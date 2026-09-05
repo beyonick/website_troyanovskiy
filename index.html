@@ -26,9 +26,9 @@
      Логика — bindPreload() в site.js, снимается по canplay + минимальному
      времени, с жёстким потолком ожидания. -->
 <div class="preload" id="preload">
-  <p class="preload-name" aria-label="Иван Трояновский">
-    <span class="pl-mask"><span>Иван</span></span>
-    <span class="pl-mask"><span>Трояновский</span></span>
+  <p class="namemark" aria-label="Иван Трояновский">
+    <span class="namemark-line"><span>Иван</span></span>
+    <span class="namemark-line"><span>Трояновский</span></span>
   </p>
 </div>
 
@@ -57,25 +57,38 @@
 
   <!-- Герой — единственное место, где кадр касается края экрана (DESIGN.md § 5). -->
   <section class="hero">
-    <div class="herovideo mask" title="Развернуть">
+    <div class="herovideo mask">
       <video autoplay muted loop playsinline preload="auto" fetchpriority="high" poster="img/hero-poster.jpg"
              aria-label="Пара на видео, снятом Иваном Трояновским"></video>
     </div>
-    <p class="heroname" id="heroname" aria-label="Иван Трояновский">
-      <span class="hnm"><span>Иван</span></span>
-      <span class="hnm"><span>Трояновский</span></span>
-    </p>
+    <div class="heroname" id="heroname">
+      <div class="wrap" style="width:100%">
+        <div class="grid">
+          <div class="heroname-inner" style="grid-column:3 / span 7">
+            <p class="namemark" aria-label="Иван Трояновский">
+              <span class="namemark-line"><span>Иван</span></span>
+              <span class="namemark-line"><span>Трояновский</span></span>
+            </p>
+            <p class="herotag fu">Снимаю любовь с 2008 года: как встречаются, как решаются, как остаются вместе.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="wrap">
-    <div class="herostrip fu">
-      <div class="grid" style="width:100%;align-items:baseline">
-        <div style="grid-column:1 / span 4">
-          <p class="herobyline-name">Иван Трояновский</p>
-        </div>
-        <div style="grid-column:5 / span 7">
-          <p class="herobyline-tag">Снимаю любовь с 2008 года: как встречаются, как решаются, как остаются вместе.</p>
-        </div>
+  <section class="wrap" style="padding-top:64px;padding-bottom:64px">
+    <div class="grid fu" style="align-items:baseline">
+      <div style="grid-column:1 / span 5">
+        <a class="heroaction" href="zayavka.html">
+          <p class="lbl">Съёмка</p>
+          <p class="h3" style="margin-top:16px">Записаться</p>
+        </a>
+      </div>
+      <div style="grid-column:7 / span 5">
+        <a class="heroaction" href="#masterclass">
+          <p class="lbl">Обучение</p>
+          <p class="h3" style="margin-top:16px">Мастер-класс</p>
+        </a>
       </div>
     </div>
   </section>
@@ -324,8 +337,7 @@
 <footer class="foot">
   <div class="footgrid">
     <div style="grid-column:1 / span 4">
-      <p class="h3" style="font-size:40px">Иван Трояновский</p>
-      <p class="cap">Инди-фотограф</p>
+      <p class="cap" style="margin:0">Инди-фотограф</p>
     </div>
     <div style="grid-column:6 / span 3;display:flex;flex-direction:column;gap:16px;align-items:flex-start">
       <p class="lbl">Связь</p>
@@ -342,6 +354,8 @@
       <a class="nav" href="/en/">RU / EN</a>
     </div>
   </div>
+  <div style="height:64px"></div>
+  <p class="footname">Иван Трояновский</p>
   <div style="height:96px"></div>
   <div class="footgrid">
     <div style="grid-column:1 / span 12"><p class="cap" style="margin:0">© 2026</p></div>

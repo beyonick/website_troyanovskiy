@@ -15,50 +15,55 @@ section[id]{scroll-margin-top:120px}
 .burger span{display:block;width:22px;height:1px;background:currentColor}
 .burger span+span{margin-top:6px}
 
-/* Прелоадер — § 8. Белый холст, имя антиквой в две строки, вход и уход маской
-   (§ 7.1). Больше на нём ничего. Панель уезжает вверх в собственную маску,
-   открывая герой; строки имени уходят туда же. */
-.preload{position:fixed;inset:0;z-index:100;background:var(--canvas);
+/* Прелоадер и имя героя — унифицированы 2026-09-05: общая марка `.namemark`
+   (размер, положение, анимация одинаковые), различаются только контейнеры —
+   `.preload` fixed на весь экран, `.heroname` absolute с --hero-inset внутри
+   героя. Прелоадер — чёрный холст (было белым), имя на нём — белое: то же
+   самое, что видно на видео секундой позже, единая заставка без монтажной
+   склейки цвета. */
+.preload{position:fixed;inset:0;z-index:100;background:var(--ink);
   display:flex;align-items:center;justify-content:center;padding:var(--page-margin);
   clip-path:inset(0 0 0 0);transition:clip-path 800ms var(--ease-reveal)}
 .preload.gone{clip-path:inset(0 0 100% 0);pointer-events:none}
-.preload-name{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;
-  font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--ink)}
-.pl-mask{display:block;overflow:hidden}
-.pl-mask>span{display:block;transform:translateY(105%);transition:transform 900ms var(--ease-reveal)}
-.pl-mask:nth-child(2)>span{transition-delay:70ms}
-.preload.in .pl-mask>span{transform:translateY(0)}
-.preload.out .pl-mask>span{transform:translateY(-105%);transition-duration:700ms;transition-delay:0ms}
+
+/* Уточнено 2026-09-05: имя больше не центрируется по видео как группа — стоит
+   на той же 12-колоночной сетке, что и остальной сайт (`.wrap`/`.grid`), с
+   якорем в 3-ю колонку, а не на --hero-inset. Вертикально по-прежнему по
+   центру героя. */
+.heroname{position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;pointer-events:none}
+
+.namemark{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;
+  font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--on-dark)}
+.namemark-line{display:block;overflow:hidden;width:max-content}
+.namemark-line>span{display:block;transform:translateY(105%);transition:transform 900ms var(--ease-reveal)}
+.namemark-line:nth-child(2)>span{transition-delay:70ms}
+.preload.in .namemark-line>span,.heroname.in .namemark-line>span{transform:translateY(0)}
+.preload.out .namemark-line>span{transform:translateY(-105%);transition-duration:700ms;transition-delay:0ms}
 @media (prefers-reduced-motion:reduce){
   .preload{transition:none!important}
-  .pl-mask>span{transform:none!important;transition:none!important}
+  .namemark-line>span{transform:none!important;transition:none!important}
 }
 
 /* Герой (§ 5, исключение). Секция на всю высоту вьюпорта; само видео с
    2026-09-04 отступает со всех сторон на --hero-inset, поле — белый холст. */
 .hero{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--canvas)}
-.herovideo{position:absolute;inset:var(--hero-inset);cursor:pointer}
+.herovideo{position:absolute;inset:var(--hero-inset);pointer-events:none}
 .herovideo video{width:100%;height:100%;object-fit:cover;display:block}
-.herovideo video:fullscreen{object-fit:contain;background:var(--ink)}
-.herovideo video:-webkit-full-screen{object-fit:contain;background:var(--ink)}
+/* Подпись под именем героя (добавлено 2026-09-05, перенесена из .herostrip,
+   которую убрали целиком — дублировала имя). Уточнено 2026-09-05: больше
+   отступа от имени, в одну строку (nowrap) на desktop; на mobile перенос
+   разрешён обратно — иначе строка не влезает и вылезает за --hero-inset. */
+.herotag{margin:40px 0 0;font-size:15px;line-height:1.55;color:var(--on-dark);white-space:nowrap}
 
-/* Имя поверх видео героя — большим антиквой, как на прелоадере (§8), белым.
-   Уходит естественной маской: лежит внутри героя (overflow:hidden) и уезжает
-   вверх под фиксированную навигацию вместе со скроллом, как в референсе. */
-.heroname{position:absolute;inset:var(--hero-inset);z-index:2;margin:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  pointer-events:none;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;
-  font-size:clamp(56px,11vw,200px);line-height:.8;letter-spacing:-.02em;color:var(--on-dark)}
-.hnm{display:block;overflow:hidden}
-.hnm>span{display:block;transform:translateY(105%);transition:transform 900ms var(--ease-reveal)}
-.hnm:nth-child(2)>span{transition-delay:70ms}
-.heroname.in .hnm>span{transform:translateY(0)}
-@media (prefers-reduced-motion:reduce){
-  .hnm>span{transform:none!important;transition:none!important}
-}
-.herostrip{min-height:120px;display:flex;align-items:center;padding:32px 0}
-.herobyline-name{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:20px;color:var(--ink);margin:0}
-.herobyline-tag{font-size:15px;line-height:1.55;color:var(--body);margin:0;max-width:58ch}
+/* Два действия под видео героя (уточнено 2026-09-05: были CTA-ссылками поверх
+   видео, теперь — блоки в потоке страницы, сразу под героем, на белом холсте).
+   Большой заголовок — сама ссылка; подчёркивание убрано (background-image:none,
+   как у .brow в списке историй) — растущая линия под гигантской антиквой
+   выглядела бы тяжело, вместо неё лёгкий сдвиг вправо на ховере. */
+.heroaction{display:block;background-image:none;color:inherit}
+.heroaction .h3{display:inline-block;transition:transform 300ms var(--ease-ui)}
+.heroaction:hover .h3{transform:translateX(10px)}
 
 /* Стадии истории */
 .stages{display:flex;gap:40px;align-items:baseline;flex-wrap:wrap}
@@ -87,15 +92,23 @@ section[id]{scroll-margin-top:120px}
 
 /* Футер обнажается, а не появляется — § 7.5. Он лежит под страницей;
    уезжает вверх сам контент. .footshell — распорка в высоту футера, чтобы
-   до конца страницы можно было доскроллить. */
+   до конца страницы можно было доскроллить.
+   Тёмная секция — исключение из §3, зафиксировано в DESIGN.md 2026-09-05. */
 main{position:relative;z-index:1;background:var(--canvas)}
 .footshell{position:relative;z-index:0}
-.foot{position:fixed;left:0;right:0;bottom:0;z-index:0;border-top:1px solid var(--hairline);padding:96px var(--page-margin) 64px;background:var(--canvas)}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:0;padding:96px var(--page-margin) 48px;background:var(--ink);color:var(--on-dark)}
+.foot .lbl{color:rgba(255,255,255,.5)}
+.foot .cap{color:rgba(255,255,255,.5)}
+.foot a{color:var(--on-dark);background-image:linear-gradient(var(--on-dark),var(--on-dark))}
 @media (prefers-reduced-motion:reduce){
   .foot{position:static}
   .footshell{display:none}
 }
 .footgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
+
+/* Имя во весь экран внутри футера (реф. Kononenko). */
+.footname{margin:0;text-align:left;color:var(--on-dark);font-family:"Cormorant Garamond",Georgia,serif;
+  font-weight:300;font-size:clamp(64px,13vw,320px);line-height:.88;letter-spacing:-.02em}
 
 /* Кадр в руках — § 7.9. Рамка выходит поверх соседнего контента. */
 .mask[data-tilt]{overflow:visible;position:relative;z-index:1}
@@ -113,12 +126,15 @@ main{position:relative;z-index:1;background:var(--canvas)}
   .bleed{width:100%!important}
 }
 @media (max-width:768px){
+  .herotag{white-space:normal;max-width:100%}
   .navbar{padding:36px var(--page-margin) 20px}
   .navmenu{position:fixed;inset:0;background:var(--canvas);flex-direction:column;justify-content:center;gap:32px;display:none;mix-blend-mode:normal}
   .navmenu a{color:var(--ink);background-image:linear-gradient(var(--ink),var(--ink));font-size:14px}
   .navbar.open{mix-blend-mode:normal}
   .navbar.open .navmenu{display:flex}
   .burger{display:block;min-width:44px;min-height:44px}
+  .navbar .logo{transform:translateX(8px)}
+  .navbar .burger{transform:translateX(-8px)}
   .stats{grid-template-columns:1fr;gap:48px}
   .stages{gap:20px}
   .footgrid>*{grid-column:1 / span 12!important;align-items:flex-start!important;text-align:left!important;margin-bottom:40px}

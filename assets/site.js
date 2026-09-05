@@ -46,16 +46,6 @@
     });
   }
 
-  function bindHeroExpand() {
-    var box = document.querySelector('.herovideo');
-    if (!box || !heroVideo) return;
-    box.addEventListener('click', function () {
-      if (heroVideo.requestFullscreen) heroVideo.requestFullscreen();
-      else if (heroVideo.webkitRequestFullscreen) heroVideo.webkitRequestFullscreen();
-      else if (heroVideo.webkitEnterFullscreen) heroVideo.webkitEnterFullscreen();
-    });
-  }
-
   /* — Прелоадер (§ 8). Держит первый экран, пока грузится видео героя.
        Вход и уход — маской (§ 7.1). Один раз за сессию: возврат внутри той же
        сессии не блокируем. Снимается по canplay видео И минимальному времени
@@ -324,7 +314,6 @@
     setHeroSource();
     bindPreload();
     keepHeroAlive();
-    bindHeroExpand();
     bindHeroName();
     bindNav();
     bindReveals();
