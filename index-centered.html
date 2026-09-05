@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Иван Трояновский — фотограф</title>
 <meta name="description" content="Инди-фотограф. Снимаю любовь с 2008 года: love story, свадьбы, семьи. По всему миру.">
+<meta name="robots" content="noindex">
 <meta property="og:title" content="Иван Трояновский — фотограф">
 <meta property="og:description" content="Снимаю любовь с 2008 года: как встречаются, как решаются, как остаются вместе.">
 <meta property="og:image" content="img/hero-poster.jpg">
@@ -18,6 +19,9 @@
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/photo-tilt.css">
 <link rel="stylesheet" href="assets/site.css">
+<!-- Альтернативная центрированная раскладка. Основа сайта — index.html
+     во всю ширину; этот файл держим для сравнения. -->
+<link rel="stylesheet" href="assets/centered.css">
 </head>
 <body>
 
@@ -94,16 +98,9 @@
   </section>
 
   <section class="sec wrap" id="istorii">
-    <!-- Фильтры стоят по левому краю таблицы, в той же правой половине
-         сетки (было — слева, в 5-й колонке, на отдельной строке выше). -->
-    <div class="grid fu" style="margin-bottom:40px;align-items:baseline">
-      <div style="grid-column:1 / span 3">
-        <p class="lbl">Истории</p>
-        <p style="margin:16px 0 0"><a class="nav" href="#istorii">Показать все · 568</a></p>
-      </div>
-      <!-- Фильтры занимают ту же правую половину, что и таблица: на среднем
-           экране в четыре колонки они переносились в две строки. -->
-      <div style="grid-column:7 / span 6">
+    <div class="grid fu" style="margin-bottom:56px;align-items:baseline">
+      <div style="grid-column:1 / span 3"><p class="lbl">Истории</p></div>
+      <div style="grid-column:5 / span 5">
         <div class="stages">
           <a class="stage on" href="#istorii">Все</a>
           <a class="stage" href="#istorii">Первый взгляд</a>
@@ -112,11 +109,9 @@
           <a class="stage" href="#istorii">Семья</a>
         </div>
       </div>
+      <div style="grid-column:11 / span 2;text-align:right"><a class="nav" href="#istorii">Показать все · 568</a></div>
     </div>
 
-    <!-- Таблица историй — в правой половине сетки, не на все 12 колонок. -->
-    <div class="grid">
-    <div style="grid-column:7 / span 6">
     <div class="bigindex fu">
       <a class="brow" href="#istorii">
         <span class="bname">Аня и Кирилл</span>
@@ -149,8 +144,6 @@
       <div class="thumb-follow"><div class="inner ph"><img src="img/q08.jpg" alt="Карусель в движении, Нью-Йорк" loading="lazy"></div></div>
       <div class="thumb-follow"><div class="inner ph"><img src="img/w02.jpg" alt="Оля и Стас целуются зимой в вязаных шапках, Москва" loading="lazy"></div></div>
     </div>
-    </div>
-    </div>
     <div style="height:64px"></div>
   </section>
 
@@ -164,10 +157,18 @@
         <h2 class="h2">Всё начинается с того, что двое перестают смотреть по сторонам.</h2>
       </div>
     </div>
-    <!-- Один кадр вместо двух в ряд: горизонтальный, на половину экрана. -->
-    <div class="grid" style="margin-top:128px">
-      <div style="grid-column:1 / span 6">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/w01.jpg" alt="Пара идёт по ночной улице в свете фонарей, Москва" loading="lazy"></div></div>
+    <div class="grid" style="margin-top:128px;align-items:start">
+      <div style="grid-column:2 / span 4">
+        <figure style="margin:0">
+          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:4/5"><img src="img/q02.jpg" alt="Двое на гранитных ступенях у воды, Петербург" loading="lazy"></div></div>
+          <figcaption class="cap">Петербург, апрель 2024</figcaption>
+        </figure>
+      </div>
+      <div style="grid-column:7 / span 6;margin-top:200px">
+        <figure style="margin:0">
+          <div class="mask reveal d2 bleed" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/w01.jpg" alt="Пара идёт по ночной улице в свете фонарей, Москва" loading="lazy"></div></div>
+          <figcaption class="cap">Она ещё не знает, что он уже решил</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -178,8 +179,10 @@
       <div style="grid-column:4 / span 7;display:flex;flex-direction:column;gap:48px">
         <p class="lead fu">Я не расставляю людей и не прошу посмотреть в камеру. Первые двадцать минут почти не снимаю — хожу рядом, пока про меня не забывают. Дальше начинается то, ради чего меня позвали.</p>
         <p class="lead fu">Мне важно, что было до. Как познакомились, кто первый написал, из-за чего чуть не разошлись на втором году. Без этого получаются красивые чужие люди.</p>
+        <div class="mask reveal" data-tilt style="width:56%"><div class="inner ph" style="aspect-ratio:4/5"><img src="img/v14.jpg" alt="Она смеётся, завёрнутая в простыню, у окна" loading="lazy"></div></div>
         <p class="lead fu">Снимаю на плёнку и на цифру — смотрю по свету и по тому, сколько у нас времени. Плёнку отдаю как есть, одним роликом подряд. Нейросети не использую: ни для дорисовки, ни для замены лиц, ни для «улучшения» кадра.</p>
         <p class="lead fu">За 18 лет — 568 историй по всему миру. Восемь пар я снимал дважды: сначала свадьбу, потом с детьми. Ради второго раза всё и делается.</p>
+        <div class="mask reveal d2" data-tilt style="width:56%;align-self:flex-end"><div class="inner ph" style="aspect-ratio:3/2"><img src="img/q06.jpg" alt="Пара целуется среди белых цветов" loading="lazy"></div></div>
       </div>
     </div>
   </section>
@@ -189,18 +192,18 @@
       <div style="grid-column:1 / span 3"><p class="lbl">Плёнка</p></div>
       <div style="grid-column:5 / span 7"><h3 class="h3">Одна плёнка целиком — без выбора «лучшего».</h3></div>
     </div>
-    <!-- Все три кадра горизонтальные, ровным рядом. -->
     <div class="grid" style="align-items:start">
       <div style="grid-column:1 / span 4">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/lf03.jpg" alt="Подушечный бой в постели" loading="lazy"></div></div>
+        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:2/3"><img src="img/lf01.jpg" alt="Силуэт поцелуя сквозь занавесь" loading="lazy"></div></div>
       </div>
-      <div style="grid-column:5 / span 4">
-        <div class="mask reveal d1" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/zn/zn-15.webp" alt="Букет над пустым проспектом, чёрно-белый кадр" loading="lazy"></div></div>
+      <div style="grid-column:5 / span 4;margin-top:80px">
+        <div class="mask reveal d1" data-tilt><div class="inner ph" style="aspect-ratio:2/3"><img src="img/lf02.jpg" alt="Он поднимает её на руки, оба смеются" loading="lazy"></div></div>
       </div>
       <div style="grid-column:9 / span 4">
-        <div class="mask reveal d2" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/zn/zn-20.webp" alt="Она смеётся, последний кадр вечера, чёрно-белый" loading="lazy"></div></div>
+        <div class="mask reveal d2" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/lf03.jpg" alt="Подушечный бой в постели" loading="lazy"></div></div>
       </div>
     </div>
+    <p class="cap fu" style="margin-top:24px">Один ролик подряд — без ретуши и пересъёмки</p>
   </section>
 
   <section class="sec">
@@ -214,18 +217,24 @@
           <h2 class="h2">Между первым свиданием и решением проходит год, два, иногда десять.</h2>
         </div>
       </div>
-      <!-- Кадр во весь экран: ни раскрытия маской, ни наклона за курсором.
-           Правило DESIGN.md §7: фото во весь экран живёт без анимации. -->
-      <div class="mask"><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
+      <figure style="margin:0">
+        <!-- Анимация снята по запросу (2026-09-04): кадр без раскрытия маской. -->
+        <div class="mask" data-tilt><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
+        <figcaption class="cap" style="margin-top:12px">Москва, ноябрь 2023 · Марина и Тимур, за два месяца до</figcaption>
+      </figure>
     </div>
   </section>
 
   <section class="sec wrap">
     <div class="grid" style="align-items:end">
-      <div style="grid-column:1 / span 6">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/zn/zn-18.webp" alt="Руки вскинуты над Невой, Петербург" loading="lazy"></div></div>
+      <!-- Вылет за край ровно с одной стороны — техника из § 5, отступ не отменяет. -->
+      <div style="grid-column:1 / span 5;margin-left:calc(var(--page-margin) * -1);width:calc(100% + var(--page-margin))">
+        <figure style="margin:0">
+          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:2/3"><img src="img/q07.jpg" alt="Жених и невеста бегут по набережной, Петербург" loading="lazy"></div></div>
+          <figcaption class="cap" style="margin-left:var(--page-margin)">Петербург, 2022 · за минуту до выхода</figcaption>
+        </figure>
       </div>
-      <div class="fu" style="grid-column:8 / span 5;padding-bottom:120px">
+      <div class="fu" style="grid-column:7 / span 6;padding-bottom:120px">
         <p class="lbl">Акт III</p>
         <p class="lbl" style="color:var(--ink);margin-top:8px;margin-bottom:48px">Свадьба</p>
         <h2 class="h2">Один день, к которому шли годами. Я прихожу за час до и ухожу последним.</h2>
@@ -262,13 +271,24 @@
         <h2 class="h2">Дальше начинается то, ради чего всё и было.</h2>
       </div>
     </div>
+    <div class="grid" style="align-items:start">
+      <div style="grid-column:1 / span 5">
+        <figure style="margin:0">
+          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:1/1"><img src="img/q04.jpg" alt="Пара шутливо идёт, взвалив друг друга на спину, на фоне Эйфелевой башни" loading="lazy"></div></div>
+          <figcaption class="cap">Спустя годы дурачатся так же</figcaption>
+        </figure>
+      </div>
+      <div style="grid-column:7 / span 4;margin-top:160px">
+        <figure style="margin:0">
+          <div class="mask reveal d2" data-tilt><div class="inner ph" style="aspect-ratio:4/5"><img src="img/q01.jpg" alt="Пара целуется у ночной дороги" loading="lazy"></div></div>
+          <figcaption class="cap">Провожают вечер как в первый раз</figcaption>
+        </figure>
+      </div>
+    </div>
   </section>
 
   <section class="sec wrap">
     <p class="lbl fu" style="margin-bottom:64px">Говорят пары</p>
-    <!-- Ширина блока — та же правая половина, что у таблицы историй. -->
-    <div class="grid">
-    <div style="grid-column:7 / span 6">
     <div class="voicewrap fu">
       <div class="voice">
         <p class="q">«Мы боялись, что будет неловко. Через полчаса я поймала себя на том, что рассказываю Ване про бабушку, а он в это время снимал. Неловко так и не стало».</p>
@@ -286,26 +306,16 @@
       <div class="thumb-follow"><div class="inner ph"><img src="img/q07.jpg" alt="Марина и Тимур бегут по набережной, Москва" loading="lazy"></div></div>
       <div class="thumb-follow"><div class="inner ph"><img src="img/q08.jpg" alt="Карусель в движении, Нью-Йорк" loading="lazy"></div></div>
     </div>
-    </div>
-    </div>
   </section>
 
-  <!-- Мастер-класс — единственная тёмная секция в теле страницы (§3,
-       расхождение зафиксировано 2026-09-05). Она должна перебивать всё
-       остальное: чёрный холст, кадр во всю половину, крупные отступы. -->
-  <section class="sec mc" id="masterclass">
-    <div class="wrap">
-      <div class="grid" style="align-items:center">
-        <div class="fu" style="grid-column:1 / span 5">
-          <p class="lbl">Второе</p>
-          <h2 class="h2" style="margin-top:32px">Иногда я объясняю, как это устроено.</h2>
-          <p class="txt" style="margin-top:48px">Раз в несколько месяцев собираю небольшую группу и разбираю не настройки, а то, что происходит между людьми до нажатия на кнопку. Как войти в чужой день и не сломать его. Как разговаривать, чтобы перестали позировать. Что делать, когда света нет, а снимать надо.</p>
-          <p class="cap" style="margin-top:40px">[ДАТА] · [МЕСТО] · [ЦЕНА] · осталось [МЕСТ] мест</p>
-          <p style="margin-top:56px"><a class="btn" href="#masterclass">Записаться на мастер-класс</a></p>
-        </div>
-        <div style="grid-column:7 / span 6">
-          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/zn/zn-16.webp" alt="Поцелуй против закатного солнца" loading="lazy"></div></div>
-        </div>
+  <section class="sec wrap" id="masterclass">
+    <div class="grid">
+      <div style="grid-column:1 / span 3"><p class="lbl">Второе</p></div>
+      <div class="fu" style="grid-column:5 / span 7">
+        <h2 class="h2">Иногда я объясняю, как это устроено.</h2>
+        <p class="txt" style="margin-top:48px">Раз в несколько месяцев собираю небольшую группу и разбираю не настройки, а то, что происходит между людьми до нажатия на кнопку. Как войти в чужой день и не сломать его. Как разговаривать, чтобы перестали позировать. Что делать, когда света нет, а снимать надо.</p>
+        <p class="cap" style="margin-top:32px">[ДАТА] · [МЕСТО] · [ЦЕНА] · осталось [МЕСТ] мест</p>
+        <p style="margin-top:48px"><a class="nav" href="#masterclass">О мастер-классе</a></p>
       </div>
     </div>
   </section>
@@ -317,8 +327,8 @@
         <p class="txt" style="margin-top:40px">Четыре шага: что снимаем, город, дата, как вас зовут. Минута времени, ответ в течение суток.</p>
         <p style="margin-top:56px"><a class="nav" href="zayavka.html">Оставить заявку</a></p>
       </div>
-      <div style="grid-column:7 / span 6">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/zn/zn-11.webp" alt="Поцелуй в арке, свет сквозь решётку" loading="lazy"></div></div>
+      <div style="grid-column:9 / span 4">
+        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:4/5"><img src="img/q12.jpg" alt="Двое едут на одном велосипеде" loading="lazy"></div></div>
       </div>
     </div>
   </section>
@@ -349,20 +359,12 @@
     </div>
   </div>
   <div style="height:64px"></div>
-  <p class="footname">Иван<br>Трояновский</p>
+  <p class="footname">Иван Трояновский</p>
   <div style="height:96px"></div>
   <div class="footgrid">
     <div style="grid-column:1 / span 12"><p class="cap" style="margin:0">© 2026</p></div>
   </div>
 </footer>
-
-<!-- Сетка по кнопке — служебный оверлей для вёрстки (12 колонок, gutter,
-     поле страницы). Не часть дизайна страницы. -->
-<button class="gridtoggle" type="button" id="gridtoggle" aria-pressed="false">Сетка</button>
-<div class="gridoverlay" id="gridoverlay" aria-hidden="true">
-  <span></span><span></span><span></span><span></span><span></span><span></span>
-  <span></span><span></span><span></span><span></span><span></span><span></span>
-</div>
 
 <script src="assets/config.js"></script>
 <script src="assets/photo-tilt.js"></script>

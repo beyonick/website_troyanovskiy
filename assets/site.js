@@ -327,3 +327,34 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+
+/* Сетка по кнопке — служебный оверлей для вёрстки (DESIGN.md §5).
+   Состояние держится в sessionStorage, чтобы не включать заново на каждой
+   странице; клавиша G — то же самое с клавиатуры. */
+(function () {
+  var btn = document.getElementById('gridtoggle');
+  var grid = document.getElementById('gridoverlay');
+  if (!btn || !grid) return;
+
+  function set(on) {
+    grid.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    try { sessionStorage.setItem('grid', on ? '1' : '0'); } catch (e) {}
+  }
+
+  var saved = '0';
+  try { saved = sessionStorage.getItem('grid') || '0'; } catch (e) {}
+  set(saved === '1');
+
+  btn.addEventListener('click', function () {
+    set(!grid.classList.contains('on'));
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'g' && e.key !== 'G' && e.key !== 'п' && e.key !== 'П') return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    set(!grid.classList.contains('on'));
+  });
+})();

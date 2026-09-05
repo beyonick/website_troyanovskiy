@@ -115,8 +115,10 @@ main{position:relative;z-index:1;background:var(--canvas)}
 .mask[data-tilt] .inner{overflow:hidden}
 .mask[data-tilt]:hover{z-index:6}
 
-/* Вылет за край (§5) — только на desktop, где рядом есть соседняя колонка. */
-.bleed{width:calc(100% + 64px)}
+/* Вылет за край (§5) выключен в основной, полноэкранной раскладке
+   (2026-09-05): отступ от края до кадра должен совпадать с отступом
+   до текста. Технику возвращает centered.css для альтернативной вёрстки. */
+.bleed{width:100%}
 
 /* Адаптив — § 11 */
 @media (max-width:1024px){
@@ -141,4 +143,36 @@ main{position:relative;z-index:1;background:var(--canvas)}
   .bmeta{gap:16px;flex-wrap:wrap}
   .brow{flex-direction:column;align-items:flex-start;gap:12px}
   .thumb-follow{display:none}
+}
+
+/* Мастер-класс — единственная тёмная секция в теле страницы (§3, расхождение
+   зафиксировано 2026-09-05). Задача блока — перебивать всё остальное на
+   странице, поэтому: чёрный холст во всю ширину, крупные вертикальные
+   отступы, кадр на половину экрана. Секция сама уходит в край вьюпорта —
+   поле держит .wrap внутри, как у футера. */
+.mc{background:var(--ink);color:var(--on-dark);padding:192px 0}
+.mc .h2,.mc .txt{color:var(--on-dark)}
+.mc .lbl,.mc .cap{color:rgba(255,255,255,.5)}
+.mc .btn{background:var(--canvas);color:var(--ink)}
+.mc .btn:hover{background:var(--canvas);color:var(--ink)}
+@media (max-width:768px){
+  .mc{padding:96px 0}
+}
+
+/* Сетка по кнопке — служебный оверлей для вёрстки, не часть дизайна.
+   Показывает те же 12 колонок, gutter и поле страницы, на которых стоит
+   сайт. Кнопка — микро-гротеск в капсе (§4), без скруглений и теней (§3). */
+.gridtoggle{position:fixed;left:var(--page-margin);bottom:24px;z-index:60;
+  background:var(--ink);color:var(--on-dark);border:0;border-radius:0;
+  padding:10px 16px;font-family:inherit;font-size:11px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;opacity:.35;
+  transition:opacity 200ms var(--ease-ui)}
+.gridtoggle:hover,.gridtoggle[aria-pressed="true"]{opacity:1}
+.gridoverlay{position:fixed;inset:0;z-index:59;pointer-events:none;display:none;
+  max-width:var(--max-width);margin:0 auto;padding:0 var(--page-margin)}
+.gridoverlay.on{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
+.gridoverlay span{background:rgba(232,40,60,.08);height:100%}
+@media (max-width:1024px){
+  .gridoverlay.on{grid-template-columns:1fr}
+  .gridoverlay span:nth-child(n+2){display:none}
 }
