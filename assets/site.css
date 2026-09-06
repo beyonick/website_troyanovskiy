@@ -89,6 +89,9 @@ section[id]{scroll-margin-top:120px}
 .voicewrap{position:relative}
 .voice{position:relative;z-index:2;padding:40px 0;border-top:1px solid var(--hairline);transition:opacity 300ms var(--ease-ui)}
 .voice:last-of-type{border-bottom:1px solid var(--hairline)}
+/* Без разделительных линий (2026-09-06) — только на index.html, у
+   index-centered.html оставлен прежний вид, снимок для сравнения. */
+.voicewrap.noline .voice{border:0}
 
 /* Футер обнажается, а не появляется — § 7.5. Он лежит под страницей;
    уезжает вверх сам контент. .footshell — распорка в высоту футера, чтобы

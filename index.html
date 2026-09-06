@@ -69,7 +69,6 @@
               <span class="namemark-line"><span>Иван</span></span>
               <span class="namemark-line"><span>Трояновский</span></span>
             </p>
-            <p class="herotag fu">Снимаю любовь с 2008 года: как встречаются, как решаются, как остаются вместе.</p>
           </div>
         </div>
       </div>
@@ -214,9 +213,12 @@
           <h2 class="h2">Между первым свиданием и решением проходит год, два, иногда десять.</h2>
         </div>
       </div>
-      <!-- Кадр во весь экран: ни раскрытия маской, ни наклона за курсором.
-           Правило DESIGN.md §7: фото во весь экран живёт без анимации. -->
-      <div class="mask"><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
+      <!-- Кадр во весь экран: ни раскрытия маской, ни наклона за курсором
+           (§7.8-бис). Явно на сетке — grid-column:1/span12, не просто
+           «широкий div» мимо 12 колонок. -->
+      <div class="grid">
+        <div class="mask" style="grid-column:1 / span 12"><div class="inner ph" style="height:88vh;min-height:420px"><img src="img/w03.jpg" alt="Марина и Тимур дурачатся на кровати в гостиничном номере, Москва" loading="lazy"></div></div>
+      </div>
     </div>
   </section>
 
@@ -266,10 +268,10 @@
 
   <section class="sec wrap">
     <p class="lbl fu" style="margin-bottom:64px">Говорят пары</p>
-    <!-- Ширина блока — та же правая половина, что у таблицы историй. -->
+    <!-- Блок слева, без разделительных линий под цитатами. -->
     <div class="grid">
-    <div style="grid-column:7 / span 6">
-    <div class="voicewrap fu">
+    <div style="grid-column:1 / span 6">
+    <div class="voicewrap fu noline">
       <div class="voice">
         <p class="q">«Мы боялись, что будет неловко. Через полчаса я поймала себя на том, что рассказываю Ване про бабушку, а он в это время снимал. Неловко так и не стало».</p>
         <p class="cap">Аня и Кирилл · Петербург · 2024</p>
@@ -304,7 +306,7 @@
           <p style="margin-top:56px"><a class="btn" href="#masterclass">Записаться на мастер-класс</a></p>
         </div>
         <div style="grid-column:7 / span 6">
-          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/v14.jpg" alt="Она смеётся, завёрнутая в простыню, у окна" loading="lazy"></div></div>
+          <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/masterclass.jpg" alt="Иван снимает пару, обнявшуюся на кровати у окна" loading="lazy"></div></div>
         </div>
       </div>
     </div>
@@ -317,8 +319,8 @@
         <p class="txt" style="margin-top:40px">Четыре шага: что снимаем, город, дата, как вас зовут. Минута времени, ответ в течение суток.</p>
         <p style="margin-top:56px"><a class="nav" href="zayavka.html">Оставить заявку</a></p>
       </div>
-      <div style="grid-column:7 / span 6">
-        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/q12.jpg" alt="Двое едут на одном велосипеде" loading="lazy"></div></div>
+      <div style="grid-column:8 / span 5">
+        <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:4/5"><img src="img/q12.jpg" alt="Двое едут на одном велосипеде" loading="lazy"></div></div>
       </div>
     </div>
   </section>
