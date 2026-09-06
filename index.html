@@ -26,10 +26,19 @@
      Логика — bindPreload() в site.js, снимается по canplay + минимальному
      времени, с жёстким потолком ожидания. -->
 <div class="preload" id="preload">
-  <p class="namemark" aria-label="Иван Трояновский">
-    <span class="namemark-line"><span>Иван</span></span>
-    <span class="namemark-line"><span>Трояновский</span></span>
-  </p>
+  <!-- Та же раскладка, что и у .heroname: .wrap → .grid → .heroname-inner,
+       якорь в 3-ю колонку, span 8. Имя на прелоадере встаёт ровно там же,
+       где имя на видео героя, и совпадает с ним 1:1. -->
+  <div class="wrap" style="width:100%">
+    <div class="grid">
+      <div class="heroname-inner" style="grid-column:3 / span 8">
+        <p class="namemark" aria-label="Иван Трояновский">
+          <span class="namemark-line"><span>Иван</span></span>
+          <span class="namemark-line"><span>Трояновский</span></span>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <header class="navbar">

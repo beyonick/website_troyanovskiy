@@ -22,7 +22,7 @@ section[id]{scroll-margin-top:120px}
    самое, что видно на видео секундой позже, единая заставка без монтажной
    склейки цвета. */
 .preload{position:fixed;inset:0;z-index:100;background:var(--ink);
-  display:flex;align-items:center;justify-content:center;padding:var(--page-margin);
+  display:flex;align-items:center;
   clip-path:inset(0 0 0 0);transition:clip-path 800ms var(--ease-reveal)}
 .preload.gone{clip-path:inset(0 0 100% 0);pointer-events:none}
 
