@@ -44,6 +44,8 @@
     // столько же пикселей вниз.
     scroller.style.height = (pin.clientHeight + max) + 'px';
     setTarget();
+    measureSpots();
+    sweepReveals(current);
   }
 
   var bar = document.querySelector('.hbar i');
@@ -74,6 +76,7 @@
     if (Math.abs(target - current) < 0.4) current = target;
     if (!touch) track.style.transform = 'translate3d(' + (-current) + 'px,0,0)';
     progress(max ? current / max : 0);
+    sweepReveals(current);
     requestAnimationFrame(raf);
   }
 
@@ -93,65 +96,72 @@
 
   // Hover-тилт с тенью (§ 7.9) — тот же photo-tilt.js, что на главной, без
   // переопределений; сам решает не подключаться на тач-вводе и при reduce
-  // (тогда вернёт null). Узлы подключаются не сразу: кадр берётся «в руки»
-  // только после того, как подъём доигран до конца — см. ready().
+  // (тогда вернёт null). Узлы подключаются не сразу: кадр берут «в руки»
+  // только после того, как раскрытие доиграно — см. ready().
   var tilt = (typeof initPhotoTilt === 'function') ? initPhotoTilt() : null;
+  // Именно массив, а не NodeList: ниже нужны map и запись masks[i] = null.
+  var masks = Array.prototype.slice.call(track.querySelectorAll('.fr .reveal'));
 
-  function ready(fr) {
-    if (fr.classList.contains('ready')) return;
-    fr.classList.add('ready');
-    fr.setAttribute('data-tilt', '');
-    if (tilt) tilt.attach(fr);
+  function ready(mask) {
+    if (mask.classList.contains('ready')) return;
+    mask.classList.add('ready');
+    // data-tilt — на внешнюю, не обрезаемую рамку (.mask), как требует § 7.9.
+    mask.setAttribute('data-tilt', '');
+    if (tilt) tilt.attach(mask);
   }
 
-  // Подъём кадров (.riseup) — один раз, назад не гасится, поэтому .fr
-  // отписывается после первого входа. Триггер сильно раньше, чем у текста:
-  // кадры едут в ленте справа налево, передним идёт правый край, а
-  // rootMargin с right:-33.3% сужает зону расчёта пересечения до левых 2/3
-  // окна ленты. «Пересекает» — как только кадр дошёл до этой границы, то
-  // есть до 2/3 экрана (было -50%, ровно середина; правка 2026-09-05).
+  // Раскрытие кадров — то же правило, что на главной: кадр открывается,
+  // когда дошёл до 12% от ведущего края (там это низ экрана, здесь — правый
+  // край окна ленты, потому что кадры едут справа налево). Один раз, назад
+  // не закрывается.
   //
-  // Кадр, уже видимый при заходе на страницу (первый в ленте), под это
-  // правило не подходит — он ещё правее, но человек его уже видит, и ждать
-  // «доезда» значило бы семь секунд держать пустое место вместо фото.
-  // Такие кадры показываются сразу и без подъёма (.instant) и сразу же
-  // готовы к тилту.
-  if ('IntersectionObserver' in window) {
-    var photoIO = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          photoIO.unobserve(e.target);
-        }
-      });
-    }, { root: pin, rootMargin: '0px -33.3% 0px 0%', threshold: 0 });
-    var pinRect = pin.getBoundingClientRect();
-    track.querySelectorAll('.fr').forEach(function (el) {
-      var r = el.getBoundingClientRect();
-      if (r.left < pinRect.right && r.right > pinRect.left) {
-        el.classList.add('instant', 'in');
-        ready(el);
-      } else {
-        photoIO.observe(el);
-      }
-    });
-  } else {
-    track.querySelectorAll('.fr').forEach(function (el) {
-      el.classList.add('instant', 'in');
-      ready(el);
-    });
+  // Считаем геометрию сами, без IntersectionObserver — и это не прихоть.
+  // У нераскрытого кадра стоит clip-path: inset(100% 0 0 0) из § 7.1, то
+  // есть видимая площадь ровно ноль. Наблюдатель такой элемент НИКОГДА не
+  // считает пересекающим: кадр не раскрывается → площадь остаётся нулевой →
+  // не раскрывается. Замкнутый круг. На главной из него выбирается ровно
+  // так же — обходом геометрии (sweep в bindReveals, там прямо написано:
+  // «кадр, навсегда зажатый в clip-path: inset(100%), недопустим»),
+  // наблюдатель там лишь помогает. Здесь обход и есть единственный механизм.
+  //
+  // Позиции кадров внутри ленты берём один раз (offsetLeft не зависит от
+  // transform, которым лента едет), дальше сравниваем арифметикой — без
+  // чтения layout на каждом кадре анимации.
+  var spots = [];
+  function measureSpots() {
+    // Уже раскрытые слоты обнулены — им позиция не нужна больше никогда.
+    spots = masks.map(function (m) { return m ? m.offsetLeft : Infinity; });
   }
 
-  // Тилт включается ровно в момент, когда подъём доигран (§ 7.9 «в руки»
-  // берут уже показанный кадр, а не едущий). Слушаем transform: у .riseup
-  // два перехода, opacity заканчивается тем же временем, но смысловой
-  // здесь — сдвиг. При reduce переходов нет вовсе и transitionend не
-  // придёт — там кадры и так уже .instant/.ready сверху.
-  track.querySelectorAll('.fr .riseup').forEach(function (ru) {
-    ru.addEventListener('transitionend', function (e) {
-      if (e.propertyName === 'transform') ready(ru.parentNode);
+  function sweepReveals(x) {
+    // Пока позиции не сняты, ничего не открываем: без этой проверки
+    // сравнение с undefined дало бы NaN и раскрыло разом всю ленту.
+    if (!masks.length || spots.length !== masks.length) return;
+    var line = pin.clientWidth * 0.88;
+    for (var i = 0; i < masks.length; i++) {
+      var m = masks[i];
+      if (!m || spots[i] - x >= line) continue;
+      m.classList.add('in');
+      masks[i] = null;
+    }
+  }
+
+  // Тилт — ровно в момент, когда раскрытие доиграно (§ 7.9 «в руки» берут
+  // уже показанный кадр). Из двух анимаций § 7.1 последней заканчивается
+  // scale внутренней обёртки (sc, 1200ms) — её и ждём; событие всплывает
+  // с .inner на .mask, поэтому слушать достаточно здесь.
+  masks.forEach(function (m) {
+    m.addEventListener('animationend', function (e) {
+      if (e.animationName === 'sc') ready(m);
     });
   });
+
+  // При reduce анимация не проигрывается вовсе (base.css её гасит), поэтому
+  // animationend не придёт — открываем и отдаём в руки сразу.
+  if (reduce) {
+    masks.forEach(function (m) { if (m) { m.classList.add('in'); ready(m); } });
+    masks = [];
+  }
 
   // На тач-вводе прогресс считается от нативной горизонтальной прокрутки.
   // На десктопе окно ленты не прокручивается само — но браузер сдвигает его,
@@ -162,6 +172,9 @@
     if (touch) {
       var m = pin.scrollWidth - pin.clientWidth;
       progress(m ? pin.scrollLeft / m : 0);
+      // На тач-вводе лента едет нативной прокруткой, а не transform —
+      // сдвиг для проверки раскрытия берём отсюда.
+      sweepReveals(pin.scrollLeft);
       return;
     }
     if (pin.scrollLeft) {

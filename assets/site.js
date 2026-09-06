@@ -156,8 +156,14 @@
   /* — Раскрытие кадров и счётчики по появлению в кадре (§ 7.1, § 7.3) — */
 
   function bindReveals() {
-    var once = Array.prototype.slice.call(document.querySelectorAll('.reveal, .rise'));
-    var fu = Array.prototype.slice.call(document.querySelectorAll('.fu'));
+    // Всё, что лежит в горизонтальной ленте (.htrack, страница истории),
+    // здесь не трогаем: там кадры въезжают сбоку, а не снизу, и ведёт их
+    // свой наблюдатель в story.js. Иначе страховка sweep() ниже, которая
+    // проверяет только вертикаль (r.top), открыла бы разом всю ленту —
+    // у всех её кадров top одинаковый и всегда в пределах экрана.
+    function ownHere(el) { return !el.closest('.htrack'); }
+    var once = Array.prototype.slice.call(document.querySelectorAll('.reveal, .rise')).filter(ownHere);
+    var fu = Array.prototype.slice.call(document.querySelectorAll('.fu')).filter(ownHere);
 
     if (reduce || !('IntersectionObserver' in window)) {
       once.concat(fu).forEach(function (el) { el.classList.add('in'); });
