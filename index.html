@@ -14,7 +14,7 @@
 <!-- Хранилище видео героя: ранний коннект, чтобы буфер пошёл сразу (см. config.js). -->
 <link rel="preconnect" href="https://378927d7-40c7-486c-a37f-a3b5c4f454a6.selstorage.ru" crossorigin>
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;1,300&family=Inter:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/photo-tilt.css">
 <link rel="stylesheet" href="assets/site.css">
@@ -64,7 +64,9 @@
     <div class="heroname" id="heroname">
       <div class="wrap" style="width:100%">
         <div class="grid">
-          <div class="heroname-inner" style="grid-column:3 / span 7">
+          <!-- 8 колонок, а не 7: Cormorant Infant шире прежней антиквы,
+               в семи «Трояновский» не помещался и вылезал за колонку. -->
+          <div class="heroname-inner" style="grid-column:3 / span 8">
             <p class="namemark" aria-label="Иван Трояновский">
               <span class="namemark-line"><span>Иван</span></span>
               <span class="namemark-line"><span>Трояновский</span></span>
@@ -178,7 +180,6 @@
         <p class="lead fu">Я не расставляю людей и не прошу посмотреть в камеру. Первые двадцать минут почти не снимаю — хожу рядом, пока про меня не забывают. Дальше начинается то, ради чего меня позвали.</p>
         <p class="lead fu">Мне важно, что было до. Как познакомились, кто первый написал, из-за чего чуть не разошлись на втором году. Без этого получаются красивые чужие люди.</p>
         <p class="lead fu">Снимаю на плёнку и на цифру — смотрю по свету и по тому, сколько у нас времени. Плёнку отдаю как есть, одним роликом подряд. Нейросети не использую: ни для дорисовки, ни для замены лиц, ни для «улучшения» кадра.</p>
-        <p class="lead fu">За 18 лет — 568 историй по всему миру. Восемь пар я снимал дважды: сначала свадьбу, потом с детьми. Ради второго раза всё и делается.</p>
       </div>
     </div>
   </section>
@@ -186,7 +187,7 @@
   <section class="sec wrap">
     <div class="grid fu" style="margin-bottom:64px">
       <div style="grid-column:1 / span 3"><p class="lbl">Плёнка</p></div>
-      <div style="grid-column:5 / span 7"><h3 class="h3">Одна плёнка целиком — без выбора «лучшего».</h3></div>
+      <div style="grid-column:5 / span 7"><h2 class="h2">Одна плёнка целиком — без выбора «лучшего».</h2></div>
     </div>
     <!-- Все три кадра горизонтальные, ровным рядом. -->
     <div class="grid" style="align-items:start">
@@ -222,16 +223,27 @@
     </div>
   </section>
 
+  <!-- Акт III читается сверху вниз: заголовок, под ним кадр, затем текст
+       (было — кадр слева, весь текстовый блок справа). Порядок как у
+       остальных актов: лейблы в 1–3 колонках, заголовок с 5-й. -->
   <section class="sec wrap">
-    <div class="grid" style="align-items:end">
-      <div style="grid-column:1 / span 6">
+    <div class="grid fu" style="margin-bottom:96px">
+      <div style="grid-column:1 / span 3">
+        <p class="lbl">Акт III</p>
+        <p class="lbl" style="color:var(--ink);margin-top:8px">Свадьба</p>
+      </div>
+      <div style="grid-column:5 / span 7">
+        <h2 class="h2">Один день, к которому шли годами. Я прихожу за час до и ухожу последним.</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <div style="grid-column:1 / span 8">
         <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:3/2"><img src="img/q07.jpg" alt="Жених и невеста бегут по набережной, Петербург" loading="lazy"></div></div>
       </div>
-      <div class="fu" style="grid-column:8 / span 5;padding-bottom:120px">
-        <p class="lbl">Акт III</p>
-        <p class="lbl" style="color:var(--ink);margin-top:8px;margin-bottom:48px">Свадьба</p>
-        <h2 class="h2">Один день, к которому шли годами. Я прихожу за час до и ухожу последним.</h2>
-        <p class="txt" style="margin-top:48px">Свадьбу снимаю целиком, без пакетов на четыре часа. Мне нужно застать утро, когда ещё ничего не началось, и ночь, когда все уже сняли обувь. Между этим — двенадцать часов, в которых я почти не разговариваю. Ни списка обязательных кадров, ни постановки у арки: всё, что происходит, происходит само.</p>
+    </div>
+    <div class="grid" style="margin-top:64px">
+      <div class="fu" style="grid-column:5 / span 5">
+        <p class="txt">Свадьбу снимаю целиком, без пакетов на четыре часа. Мне нужно застать утро, когда ещё ничего не началось, и ночь, когда все уже сняли обувь. Между этим — двенадцать часов, в которых я почти не разговариваю. Ни списка обязательных кадров, ни постановки у арки: всё, что происходит, происходит само.</p>
       </div>
     </div>
   </section>
@@ -319,7 +331,8 @@
         <p class="txt" style="margin-top:40px">Четыре шага: что снимаем, город, дата, как вас зовут. Минута времени, ответ в течение суток.</p>
         <p style="margin-top:56px"><a class="nav" href="zayavka.html">Оставить заявку</a></p>
       </div>
-      <div style="grid-column:8 / span 5">
+      <!-- Кадр здесь подчинён заголовку, поэтому узкий: 3 колонки, не 5. -->
+      <div style="grid-column:10 / span 3">
         <div class="mask reveal" data-tilt><div class="inner ph" style="aspect-ratio:4/5"><img src="img/q12.jpg" alt="Двое едут на одном велосипеде" loading="lazy"></div></div>
       </div>
     </div>

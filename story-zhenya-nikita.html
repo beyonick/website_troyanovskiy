@@ -11,9 +11,10 @@
 <meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;1,300&family=Inter:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/photo-tilt.css">
 <link rel="stylesheet" href="assets/story.css">
 </head>
 
@@ -35,11 +36,20 @@
   2. § 6 «Подпись под кадром — caption, слева». Подписей под кадрами на этой
      странице больше нет (сняты по прямой правке 2026-09-05) — история читается
      только фотографиями и вступлением/концовкой ленты.
-  3. § 7.1 и § 7.9 «Раскрытие кадра маской» и «Кадр в руках» (hover-тилт) —
-     на кадрах этой ленты выключены по прямой правке 2026-09-05: кадры
-     показываются сразу, без входной анимации и без наклона за курсором.
-     Текстовые блоки (имя, лид, подписи вступления и концовки) по-прежнему
-     проявляются тихим fu (§ 7 п. 1‑бис) — это не «анимация на фото».
+  3. § 7.1 «Раскрытие кадра маской» — на кадрах этой ленты не маска, а долгий
+     подъём снизу вверх: 7s, начинается, когда кадр дошёл до 2/3 экрана.
+     Это прямое расхождение и с § 7 «короткая амплитуда, мягкая кривая»
+     (7 секунд — не «деликатно», это самая длинная анимация на сайте), и с
+     конкретными 900/1200ms из § 7.1. По прямой просьбе 2026-09-05: «сильно
+     дольше, раз в 10». Чтобы длина читалась как замысел, а не как тормоз,
+     кривые разведены: прозрачность идёт expo-out (кадр виден почти сразу),
+     а сдвиг — quad-out (едет и оседает всю дорогу).
+     § 7.9 «Кадр в руках» — тот же `photo-tilt.js`, что и на главной, без
+     переопределений, но включается на кадре только после того, как подъём
+     доигран до конца (`data-tilt` вешает story.js по transitionend).
+     Текстовые блоки по-прежнему проявляются тихим fu (§ 7 п. 1‑бис).
+     Переключателя «Анимация / Статично» больше нет — снят 2026-09-05,
+     анимация всегда включена.
   4. § 7.7 «Жёсткий скролл-джекинг запрещён» — НЕ нарушено. Позиция скролла не
      подменяется: страница высокая, окно ленты приколото position:sticky,
      а лента едет по X от реальной позиции с инерционным сглаживанием
@@ -48,6 +58,14 @@
      прокрутка пальцем, без перехвата и без сглаживания (там инерция уже своя).
   5. Кадры выбраны из 978 присланных; в ленте 20 избранных. Пропорции — только
      2:3 и 3:2 (§ 6, оба разрешены), кадрирования нет.
+  6. § 8 «Карточек не существует. Ни одной» и «Залитая кнопка на сайте
+     существует ровно одна — отправка формы». Блок заявки в конце ленты
+     (.endcard) нарушает оба пункта: это карточка 16:9 в рамке 1px и в ней
+     залитая кнопка «Напишите». По прямой просьбе 2026-09-05 — она же
+     заменила чёрную панель контактов, так что тёмных секций на этой
+     странице больше нет и расхождение с § 3 снято. «Все истории» и
+     «На главную» оставлены текстовыми ссылками с растущей линией (§ 8) —
+     это и есть «кнопки второго уровня».
 
   Файлы в img/zn/ сейчас — лёгкие плейсхолдеры (высота 480px) из тех же самых
   кадров. Имена и пропорции финальные: полноразмерные файлы кладутся под теми
@@ -80,115 +98,111 @@
   <div class="hpin" id="hpin">
     <div class="htrack" id="htrack">
 
-      <!-- Начало ленты: миниатюра, имена, описание. -->
+      <!-- Начало ленты: имена, описание. Без миниатюры (снята по правке
+           2026-09-05) — весь текст лежит в вертикальных границах кадра
+           (см. .pan--intro в story.css), а не растянут на всю band-высоту. -->
       <section class="pan pan--intro">
-        <div class="thumb ph" style="aspect-ratio:3/2">
-          <img src="img/zn/zn-cover.webp" alt="Женя и Никита на набережной Невы" width="1200" height="800" fetchpriority="high">
-        </div>
-        <h1 class="h2 fu">Женя и Никита</h1>
+        <h1 class="h1 fu">Женя и Никита</h1>
         <p class="lead fu d1">Один вечер: с восьми, когда солнце легло вдоль Невского, до полуночи у разведённых мостов. Никита нёс её через дорогу, Женя смеялась так, что я перестал считать кадры.</p>
         <div class="meta">
           <p class="cap fu d2" style="margin:0">Петербург · <time datetime="2021-07-17">17 июля 2021</time></p>
-          <p class="cap fu d2" style="margin:0">978 кадров за вечер · здесь 20</p>
-          <p class="cap fu d3" style="margin:0">Прокрутка — вправо</p>
         </div>
       </section>
 
       <!-- Кадры. Единая высота, центр по вертикали (см. story.css .htrack). -->
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-01.webp" alt="Никита несёт Женю через Невский на закате" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-01.webp" alt="Никита несёт Женю через Невский на закате" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-02.webp" alt="Ноги двоих и длинные тени на пешеходном переходе" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-02.webp" alt="Ноги двоих и длинные тени на пешеходном переходе" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-03.webp" alt="Никита несёт Женю через перекрёсток, Петербург" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-03.webp" alt="Никита несёт Женю через перекрёсток, Петербург" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-04.webp" alt="Женя тянется к пятну света на колонне" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-04.webp" alt="Женя тянется к пятну света на колонне" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-05.webp" alt="Женя смеётся через плечо Никиты" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-05.webp" alt="Женя смеётся через плечо Никиты" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-06.webp" alt="Женя прячет лицо в белых пионах" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-06.webp" alt="Женя прячет лицо в белых пионах" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-07.webp" alt="Поцелуй в зарослях плюща" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-07.webp" alt="Поцелуй в зарослях плюща" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-08.webp" alt="Двое у стены, заросшей плющом" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-08.webp" alt="Двое у стены, заросшей плющом" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-09.webp" alt="Никита кружит Женю, волосы волной" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-09.webp" alt="Никита кружит Женю, волосы волной" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-10.webp" alt="Никита несёт Женю навстречу низкому солнцу" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-10.webp" alt="Никита несёт Женю навстречу низкому солнцу" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-11.webp" alt="Поцелуй в арке, свет сквозь решётку" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-11.webp" alt="Поцелуй в арке, свет сквозь решётку" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-12.webp" alt="Женя одна у жёлтой стены во дворе" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-12.webp" alt="Женя одна у жёлтой стены во дворе" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-13.webp" alt="Женя и Никита сидят на брусчатке у старой Волги" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-13.webp" alt="Женя и Никита сидят на брусчатке у старой Волги" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-14.webp" alt="Букет пионов с красной лентой в руке на ходу" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-14.webp" alt="Букет пионов с красной лентой в руке на ходу" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-15.webp" alt="Женя поднимает букет над пустым проспектом" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-15.webp" alt="Женя поднимает букет над пустым проспектом" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-16.webp" alt="Поцелуй на набережной против закатного солнца" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-16.webp" alt="Поцелуй на набережной против закатного солнца" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-17.webp" alt="Силуэты двоих на мосту на фоне гаснущего неба" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-17.webp" alt="Силуэты двоих на мосту на фоне гаснущего неба" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-18.webp" alt="Женя вскинула руки над Невой" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-18.webp" alt="Женя вскинула руки над Невой" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
       <figure class="fr v">
-        <div class="ph"><img src="img/zn/zn-19.webp" alt="Поцелуй крупно, её ладонь с кольцом у его лица" loading="lazy" width="1000" height="1500"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-19.webp" alt="Поцелуй крупно, её ладонь с кольцом у его лица" loading="lazy" width="1000" height="1500"></div></div>
       </figure>
 
       <figure class="fr h">
-        <div class="ph"><img src="img/zn/zn-20.webp" alt="Женя смеётся, Никита за плечом, ночная набережная" loading="lazy" width="1500" height="1000"></div>
+        <div class="riseup"><div class="ph"><img src="img/zn/zn-20.webp" alt="Женя смеётся, Никита за плечом, ночная набережная" loading="lazy" width="1500" height="1000"></div></div>
       </figure>
 
-      <!-- Конец ленты: связь и заявка. -->
-      <section class="pan pan--end">
-        <p class="lbl fu">Съёмка</p>
-        <h2 class="h3 fu d1"><a href="zayavka.html" style="background-image:none">Записаться на съёмку</a></h2>
-        <div class="contacts">
-          <p class="lbl fu d2">Связь</p>
-          <a class="fu d2" href="https://t.me/troyanovsky">Телеграм</a>
-          <a class="fu d2" href="mailto:hello@troyanovsky.photo">hello@troyanovsky.photo</a>
-          <a class="fu d3" href="tel:+79119999999">+7 911 999‑99‑99</a>
-        </div>
-        <div class="panfoot">
-          <p class="cap">Иван Трояновский · инди-фотограф · снимаю по всему миру</p>
-          <p class="cap" style="margin-top:4px"><a href="/#istorii">Все истории</a></p>
+      <!-- Конец ленты: заявка. Блок 16:9 ростом с кадр, как ещё одна
+           горизонтальная фотография в ряду, только белая и в рамке
+           (правка 2026-09-05, взамен чёрной панели контактов). -->
+      <section class="endcard">
+        <div class="endcard-in">
+          <h2 class="h2 fu">Записаться на съёмку</h2>
+          <p class="lead fu d1">Беру не больше двух съёмок в неделю и снимаю по всему миру. Напишите — отвечу сам и скажу, свободна ли ваша дата.</p>
+          <a class="ecbtn fu d2" href="zayavka.html"><span>Напишите</span></a>
+          <div class="ecsec fu d3">
+            <a href="/#istorii">Все истории</a>
+            <a href="/">На главную</a>
+          </div>
         </div>
       </section>
 
@@ -200,8 +214,10 @@
 <div class="hbar" aria-hidden="true"><i></i></div>
 <p class="cap hcount" id="hcount" aria-hidden="true">01 / 20</p>
 
+
 <script src="assets/config.js"></script>
 <script src="assets/site.js"></script>
+<script src="assets/photo-tilt.js"></script>
 <script src="assets/story.js"></script>
 </body>
 </html>

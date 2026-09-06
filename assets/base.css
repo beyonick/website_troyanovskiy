@@ -4,7 +4,7 @@
 :root{
   --canvas:#FFFFFF; --ink:#0A0A0A; --body:#111111;
   --muted:#6E6E6E; --hairline:#E5E5E5; --on-dark:#FFFFFF;
-  --page-margin:64px; --max-width:none; --gutter:24px; --section-gap:256px;
+  --page-margin:64px; --max-width:none; --gutter:24px; --section-gap:320px;
   --hero-inset:24px;
   /* Алый — единственный неоновый акцент вне фотографий (2026-09-05):
      выделение текста, тема любви/сердца. Расхождение с §3 названо в DESIGN.md. */
@@ -12,7 +12,7 @@
   --ease-reveal:cubic-bezier(.16,1,.3,1); --ease-ui:cubic-bezier(.65,0,.35,1);
 }
 @media (max-width:768px){
-  :root{--page-margin:20px;--section-gap:128px;--hero-inset:20px}
+  :root{--page-margin:20px;--section-gap:160px;--hero-inset:20px}
 }
 
 *{box-sizing:border-box}
@@ -35,13 +35,13 @@ a:hover{background-size:100% 1px;color:var(--ink)}
 .lbl{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 .nav{font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .cap{font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 0}
-.h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
-.h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(40px,6vw,96px);line-height:.98;letter-spacing:-.015em;color:var(--ink);margin:0;text-wrap:balance}
-.h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:clamp(32px,3.5vw,56px);line-height:1.05;letter-spacing:-.01em;color:var(--ink);margin:0;text-wrap:balance}
-.q{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:300;font-size:clamp(24px,3vw,40px);line-height:1.25;color:var(--ink);margin:0;text-wrap:pretty}
-.lead{font-size:clamp(18px,1.6vw,24px);font-weight:400;line-height:1.5;letter-spacing:-.01em;color:var(--body);margin:0;max-width:54ch;text-wrap:pretty}
-.txt{font-size:17px;font-weight:400;line-height:1.6;max-width:62ch;color:var(--body);margin:0;text-wrap:pretty}
-.num{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(80px,13vw,260px);line-height:.86;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.h1{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.h2{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.h3{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.q{font-family:"Cormorant Infant",Georgia,serif;font-style:italic;font-weight:300;font-size:clamp(24px,3vw,40px);line-height:1.25;color:var(--ink);margin:0;text-wrap:pretty}
+.lead{font-size:clamp(16px,1.2vw,19px);font-weight:400;line-height:1.55;letter-spacing:-.01em;color:var(--body);margin:0;max-width:54ch;text-wrap:pretty}
+.txt{font-size:15px;font-weight:400;line-height:1.65;max-width:62ch;color:var(--body);margin:0;text-wrap:pretty}
+.num{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(80px,13vw,260px);line-height:.86;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--ink)}
 .rule{height:1px;background:var(--hairline);border:0;margin:0}
 
 /* Кадр — § 6. Ни рамки, ни тени, ни скругления. */

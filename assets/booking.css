@@ -29,7 +29,7 @@
   font-family:inherit;color:var(--body);transition:padding-left 300ms var(--ease-ui),border-color 300ms var(--ease-ui)}
 .opt:hover{padding-left:16px}
 .opt:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
-.optname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:-.015em;color:var(--ink)}
+.optname{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(30px,3.4vw,44px);line-height:1;letter-spacing:-.015em;color:var(--ink)}
 .opt[aria-pressed="true"]{border-bottom-color:var(--ink)}
 .opt[aria-pressed="true"] .optname{font-weight:400}
 .opt[aria-pressed="true"] .mark{color:var(--ink)}
@@ -37,7 +37,7 @@
 
 /* Календарь — § 8. Сетка 7×n, ячейка квадратная, радиус 0. */
 .monthnav{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:24px}
-.monthname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:32px;line-height:1.05;color:var(--ink)}
+.monthname{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:32px;line-height:1.05;color:var(--ink)}
 .calhead{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--hairline)}
 .calhead span{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 0 12px 8px}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}

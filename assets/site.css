@@ -33,7 +33,7 @@ section[id]{scroll-margin-top:120px}
 .heroname{position:absolute;inset:0;z-index:2;
   display:flex;align-items:center;pointer-events:none}
 
-.namemark{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;
+.namemark{margin:0;font-family:"Cormorant Infant",Georgia,serif;font-weight:300;
   font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--on-dark)}
 .namemark-line{display:block;overflow:hidden;width:max-content}
 .namemark-line>span{display:block;transform:translateY(105%);transition:transform 900ms var(--ease-reveal)}
@@ -78,7 +78,7 @@ section[id]{scroll-margin-top:120px}
 .bigindex:hover .brow{border-bottom-color:transparent}
 .bigindex:hover .brow,.voicewrap:hover .voice{opacity:.35}
 .bigindex .brow:hover,.voicewrap .voice:hover{opacity:1;background-image:none}
-.bname{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(36px,4.6vw,72px);line-height:1;letter-spacing:-.015em;color:var(--ink);display:inline-block;transition:transform 300ms var(--ease-ui)}
+.bname{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(36px,4.6vw,72px);line-height:1;letter-spacing:-.015em;color:var(--ink);display:inline-block;transition:transform 300ms var(--ease-ui)}
 .brow:hover .bname{transform:translateX(10px)}
 .bmeta{display:flex;gap:32px;align-items:baseline}
 .thumb-follow{position:fixed;overflow:hidden;pointer-events:none;z-index:1;opacity:0;transition:opacity 220ms var(--ease-ui)}
@@ -110,7 +110,7 @@ main{position:relative;z-index:1;background:var(--canvas)}
 .footgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
 
 /* Имя во весь экран внутри футера (реф. Kononenko). */
-.footname{margin:0;text-align:left;color:var(--on-dark);font-family:"Cormorant Garamond",Georgia,serif;
+.footname{margin:0;text-align:left;color:var(--on-dark);font-family:"Cormorant Infant",Georgia,serif;
   font-weight:300;font-size:clamp(64px,13vw,320px);line-height:.88;letter-spacing:-.02em}
 
 /* Кадр в руках — § 7.9. Рамка выходит поверх соседнего контента. */

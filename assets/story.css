@@ -6,8 +6,17 @@
      одновременно видно 2–4 кадра. Это условие формата, а не вкусовое решение.
    — § 6 «подпись под кадром»: подписей на этой странице нет (правка
      2026-09-05) — история читается только фотографиями.
-   — § 7.1/7.9 «раскрытие маской»/«кадр в руках»: на кадрах ленты выключены
-     (правка 2026-09-05) — кадры видны сразу, без входа и без hover-тилта.
+   — § 7.1 «раскрытие маской»: на кадрах ленты вместо маски — подъём снизу
+     вверх (`.riseup`), по референсу mersi-architecture.com/projets/naya.
+     § 7.9 «кадр в руках» (hover-тилт с тенью) — включён как есть, тот же
+     `photo-tilt.js`, что на главной, без переопределений. Оба приёма ведёт
+     переключатель `.animtoggle` — служебный, временный, для Вани, не часть
+     финального сайта (история правок: анимации не было → простой translateY
+     → подъём + тилт+тень, как сейчас, — 2026-09-05).
+   — § 3 «тёмных секций нет, кроме футера»: последняя панель ленты
+     (.pan--end) — чёрный блок, тот же приём, что у футера сайта, по прямой
+     просьбе 2026-09-05. Второе тёмное место на сайте, оба — по прямому
+     указанию, не самостоятельное решение.
    — § 7.7 «скролл-джекинг запрещён»: позиция скролла НЕ подменяется.
      Страница высокая, лента приколота (sticky) и едет по X от реальной
      позиции скролла с инерционным сглаживанием (см. story.js). Полоса
@@ -55,20 +64,79 @@ body.story{overflow-x:clip;background:var(--canvas)}
 .fr.h{aspect-ratio:3 / 2}
 .fr .ph{height:100%;aspect-ratio:auto}
 
-/* Панель — интро и контакты. Ширина фиксированная, текст не растягивается. */
-.pan{flex:0 0 auto;height:var(--band);width:min(46vw,560px);
-  display:flex;flex-direction:column;justify-content:flex-end}
-.pan--intro{width:min(52vw,660px)}
-.pan .thumb{width:min(60%,300px)}
-.pan .h2{margin-top:40px}
-.pan .lead{margin-top:24px;max-width:34ch}
-.pan .meta{margin-top:40px;display:flex;flex-direction:column;gap:6px}
+/* .riseup — подъём кадра снизу вверх при входе в ленту (§7.1, переписано,
+   по референсу mersi-architecture.com/projets/naya), один раз — назад не
+   гасится. data-tilt висит на самом .fr (внешняя, не обрезаемая рамка —
+   как требует §7.9), поэтому подъём живёт на промежуточном .riseup: иначе
+   покадровый inline-transform от photo-tilt.js на hover дрался бы с
+   CSS-transition подъёма на одном и том же элементе.
 
-.pan--end{justify-content:flex-end}
-.pan--end .h3{margin-top:12px}
-.pan--end .contacts{margin-top:64px;display:flex;flex-direction:column;gap:14px}
-.pan--end .contacts a{font-size:17px;line-height:1.6}
-.pan--end .panfoot{margin-top:64px}
+   Длительность 7s — в 10 раз больше прежних 700ms, по прямой просьбе
+   (расхождение с § 7 и § 7.1 названо в шапке html). Две разные кривые —
+   это и есть работа с изами, без неё такая длина читается как зависание:
+   — прозрачность: expo-out. 90% пути за первую секунду, кадр появляется
+     почти сразу и дальше уже не «полупрозрачный на семь секунд»;
+   — сдвиг: quad-out. Движение размазано по всей длине (за первую секунду
+     ~40%, дальше медленное оседание) — кадр всё время едет, но никогда
+     не дёргается. Резкого старта нет ни у одной из кривых. */
+.fr .riseup{display:block;height:100%}
+.fr .riseup{opacity:0;transform:translateY(56px);
+  transition:opacity 7000ms cubic-bezier(.16,1,.3,1),
+             transform 7000ms cubic-bezier(.25,.46,.45,.94)}
+.fr.in .riseup{opacity:1;transform:translateY(0)}
+
+/* Кадры, уже видимые при заходе на страницу, не едут: показываются как есть
+   (см. story.js) — иначе первый кадр семь секунд полз бы на глазах. */
+.fr.instant .riseup{transition:none}
+
+/* Тилт (§7.9) включается только на доигравшем кадре — story.js вешает
+   data-tilt по transitionend. Страховка на случай, если атрибут окажется
+   на кадре раньше времени: пока нет .ready, ни наклона, ни тени. */
+.fr:not(.ready){transform:none!important;box-shadow:none!important}
+
+/* Панель — интро. Высота такая же, как у кадра (правка 2026-09-05: раньше
+   была во всю band-высоту, текст «повисал» ниже нижнего края фотографий) —
+   весь текст лежит в тех же вертикальных границах, что и кадры. */
+.pan{flex:0 0 auto;height:min(var(--band),1080px);width:min(46vw,560px);
+  display:flex;flex-direction:column;justify-content:flex-end}
+.pan--intro{width:min(58vw,760px)}
+.pan .lead{margin-top:32px;max-width:34ch}
+.pan .meta{margin-top:32px}
+
+/* Заявка в конце ленты — блок 16:9 ростом с кадр, то есть ещё одна
+   «горизонтальная фотография» в ряду, только белая и в рамке 1px
+   (правка 2026-09-05, взамен чёрной панели контактов). Расхождение с § 8
+   «карточек не существует» названо в шапке html. Рамка — --ink, а не
+   --hairline: рядом с фотографиями волосок бы просто пропал. */
+.endcard{flex:0 0 auto;height:min(var(--band),1080px);aspect-ratio:16 / 9;
+  border:1px solid var(--ink);background:var(--canvas);color:var(--body);
+  display:flex;align-items:center;justify-content:center;
+  padding:var(--page-margin)}
+.endcard-in{max-width:46ch;text-align:center;
+  display:flex;flex-direction:column;align-items:center}
+.endcard .lead{margin-top:24px}
+
+/* Кнопка «Напишите» — вторая залитая кнопка на сайте (§ 8 разрешает ровно
+   одну, расхождение названо в шапке html). Ховер не меняет цвет заливки,
+   а вытесняет её белым снизу вверх — тем же движением, что раскрытие
+   кадра (§ 7.1): маска, а не проявление. Рамка стоит всегда, поэтому
+   на инверсии кнопка не «схлопывается» и не прыгает. */
+.ecbtn{position:relative;overflow:hidden;display:inline-block;margin-top:48px;
+  border:1px solid var(--ink);background:var(--ink);background-image:none;
+  padding:22px 44px;font-size:11px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--on-dark)}
+.ecbtn::before{content:"";position:absolute;inset:0;background:var(--canvas);
+  transform:translateY(101%);transition:transform 520ms var(--ease-reveal)}
+.ecbtn span{position:relative;z-index:1;transition:color 520ms var(--ease-reveal)}
+.ecbtn:hover{background:var(--ink);background-image:none;color:var(--on-dark)}
+.ecbtn:hover::before{transform:translateY(0)}
+.ecbtn:hover span{color:var(--ink)}
+
+/* Второй уровень — текстовые ссылки с растущей линией (§ 8), не кнопки:
+   вес у них должен быть заметно ниже, чем у «Напишите». */
+.ecsec{margin-top:40px;display:flex;gap:32px;justify-content:center}
+.ecsec a{font-size:11px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink)}
 
 /* Волосок прогресса по низу экрана. Единственная линия на странице (§ 3). */
 .hbar{position:fixed;left:0;right:0;bottom:0;height:1px;background:var(--hairline);z-index:40}
@@ -85,10 +153,19 @@ body.story{overflow-x:clip;background:var(--canvas)}
      шире экрана — их проходят свайпом, как панораму. */
   .htrack{--band:min(calc(100svh - var(--page-margin) * 2 - 56px), calc((100vw - var(--page-margin) * 2) * 1.5))}
   .pan,.pan--intro{width:82vw}
-  .pan .thumb{width:70%}
+  /* Блок заявки на мобильном не 16:9: в такой пропорции он был бы вдвое
+     шире экрана, и текст пришлось бы читать свайпом. Ширина как у панелей,
+     высота — по содержимому в пределах полосы. */
+  .endcard{aspect-ratio:auto;width:86vw;padding:32px 20px}
+  .ecbtn{margin-top:36px}
+  .ecsec{margin-top:28px;gap:24px}
   .hcount{display:none}
 }
 
 @media (prefers-reduced-motion:reduce){
   .htrack{will-change:auto}
+  /* Переключатель показа кадров не должен уметь включить движение, которое
+     человек явно выключил на уровне ОС (§7.8) — подъём остаётся статичным
+     независимо от .static-photos. Hover-тилт гасит сам photo-tilt.css. */
+  .fr .riseup{opacity:1!important;transform:none!important;transition:none!important}
 }

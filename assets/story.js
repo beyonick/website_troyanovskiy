@@ -77,22 +77,81 @@
     requestAnimationFrame(raf);
   }
 
-  // Раскрытие текста (§ 7 п. 1-бис) — единственная анимация, оставшаяся на
-  // этой странице; у самих кадров входа и hover-тилта больше нет (правка
-  // 2026-09-05). Наблюдатель смотрит внутрь окна ленты — вход текста здесь
+  // Раскрытие текста (§ 7 п. 1-бис, туда-обратно, окно 12% с обеих сторон —
+  // не менялось). Наблюдатель смотрит внутрь окна ленты — вход здесь
   // горизонтальный, но IntersectionObserver с root: .hpin ловит его так же,
   // как вертикальный.
-  var io = null;
+  var textIO = null;
   if ('IntersectionObserver' in window) {
-    io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        e.target.classList.toggle('in', e.isIntersecting);
-      });
+    textIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.target.classList.toggle('in', e.isIntersecting); });
     }, { root: pin, rootMargin: '0px 12% 0px 12%', threshold: 0.08 });
-    track.querySelectorAll('.fu').forEach(function (el) { io.observe(el); });
+    track.querySelectorAll('.fu').forEach(function (el) { textIO.observe(el); });
   } else {
     track.querySelectorAll('.fu').forEach(function (el) { el.classList.add('in'); });
   }
+
+  // Hover-тилт с тенью (§ 7.9) — тот же photo-tilt.js, что на главной, без
+  // переопределений; сам решает не подключаться на тач-вводе и при reduce
+  // (тогда вернёт null). Узлы подключаются не сразу: кадр берётся «в руки»
+  // только после того, как подъём доигран до конца — см. ready().
+  var tilt = (typeof initPhotoTilt === 'function') ? initPhotoTilt() : null;
+
+  function ready(fr) {
+    if (fr.classList.contains('ready')) return;
+    fr.classList.add('ready');
+    fr.setAttribute('data-tilt', '');
+    if (tilt) tilt.attach(fr);
+  }
+
+  // Подъём кадров (.riseup) — один раз, назад не гасится, поэтому .fr
+  // отписывается после первого входа. Триггер сильно раньше, чем у текста:
+  // кадры едут в ленте справа налево, передним идёт правый край, а
+  // rootMargin с right:-33.3% сужает зону расчёта пересечения до левых 2/3
+  // окна ленты. «Пересекает» — как только кадр дошёл до этой границы, то
+  // есть до 2/3 экрана (было -50%, ровно середина; правка 2026-09-05).
+  //
+  // Кадр, уже видимый при заходе на страницу (первый в ленте), под это
+  // правило не подходит — он ещё правее, но человек его уже видит, и ждать
+  // «доезда» значило бы семь секунд держать пустое место вместо фото.
+  // Такие кадры показываются сразу и без подъёма (.instant) и сразу же
+  // готовы к тилту.
+  if ('IntersectionObserver' in window) {
+    var photoIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          photoIO.unobserve(e.target);
+        }
+      });
+    }, { root: pin, rootMargin: '0px -33.3% 0px 0%', threshold: 0 });
+    var pinRect = pin.getBoundingClientRect();
+    track.querySelectorAll('.fr').forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.left < pinRect.right && r.right > pinRect.left) {
+        el.classList.add('instant', 'in');
+        ready(el);
+      } else {
+        photoIO.observe(el);
+      }
+    });
+  } else {
+    track.querySelectorAll('.fr').forEach(function (el) {
+      el.classList.add('instant', 'in');
+      ready(el);
+    });
+  }
+
+  // Тилт включается ровно в момент, когда подъём доигран (§ 7.9 «в руки»
+  // берут уже показанный кадр, а не едущий). Слушаем transform: у .riseup
+  // два перехода, opacity заканчивается тем же временем, но смысловой
+  // здесь — сдвиг. При reduce переходов нет вовсе и transitionend не
+  // придёт — там кадры и так уже .instant/.ready сверху.
+  track.querySelectorAll('.fr .riseup').forEach(function (ru) {
+    ru.addEventListener('transitionend', function (e) {
+      if (e.propertyName === 'transform') ready(ru.parentNode);
+    });
+  });
 
   // На тач-вводе прогресс считается от нативной горизонтальной прокрутки.
   // На десктопе окно ленты не прокручивается само — но браузер сдвигает его,
