@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Женя и Никита — Иван Трояновский</title>
+<meta name="description" content="Женя и Никита, Петербург, 17 июля 2021. Один вечер от заката до развода мостов, 20 избранных кадров.">
+<meta property="og:title" content="Женя и Никита — Петербург, 2021">
+<meta property="og:description" content="Один вечер от заката до развода мостов. 978 кадров, 20 избранных.">
+<meta property="og:image" content="img/zn/zn-cover.webp">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/story.css">
+</head>
+
+<!--
+  Страница истории пары. Формат по прямой просьбе: весь скролл только
+  горизонтальный, контент во весь экран. Референс формата и характера
+  скролла — mersi-architecture.com/projets/naya (второй раз указан прямо,
+  2026-09-05): все кадры одной высоты по центру экрана, инерционный скролл
+  с заметной задержкой (лента «догоняет» движение, а не идёт с ним вплотную).
+
+  Расхождения с DESIGN.md, названные вслух (CLAUDE.md), а не решённые молча:
+
+  1. § 5 «Плотных экранов на сайте нет вообще», «Ритм: … один кадр во весь
+     экран». В горизонтальной ленте одновременно видно 2–4 кадра — это условие
+     самого формата. Кадры при этом не вразнобой по высоте (как в первой
+     версии страницы) — по прямой правке 2026-09-05 все одной высоты и по
+     центру полосы; это ближе к плитке, чем допускает §5, но это прямое
+     указание для формата истории, не общее правило сайта.
+  2. § 6 «Подпись под кадром — caption, слева». Подписей под кадрами на этой
+     странице больше нет (сняты по прямой правке 2026-09-05) — история читается
+     только фотографиями и вступлением/концовкой ленты.
+  3. § 7.1 и § 7.9 «Раскрытие кадра маской» и «Кадр в руках» (hover-тилт) —
+     на кадрах этой ленты выключены по прямой правке 2026-09-05: кадры
+     показываются сразу, без входной анимации и без наклона за курсором.
+     Текстовые блоки (имя, лид, подписи вступления и концовки) по-прежнему
+     проявляются тихим fu (§ 7 п. 1‑бис) — это не «анимация на фото».
+  4. § 7.7 «Жёсткий скролл-джекинг запрещён» — НЕ нарушено. Позиция скролла не
+     подменяется: страница высокая, окно ленты приколото position:sticky,
+     а лента едет по X от реальной позиции с инерционным сглаживанием
+     (см. story.js) — так же, как в референсе. Полоса браузера, Home/End,
+     якоря и IntersectionObserver работают штатно. На тач-вводе — нативная
+     прокрутка пальцем, без перехвата и без сглаживания (там инерция уже своя).
+  5. Кадры выбраны из 978 присланных; в ленте 20 избранных. Пропорции — только
+     2:3 и 3:2 (§ 6, оба разрешены), кадрирования нет.
+
+  Файлы в img/zn/ сейчас — лёгкие плейсхолдеры (высота 480px) из тех же самых
+  кадров. Имена и пропорции финальные: полноразмерные файлы кладутся под теми
+  же именами, вёрстка не прыгает (§ 6).
+-->
+
+<body class="story">
+
+<header class="navbar solid">
+  <a class="logo" href="/" aria-label="Иван Трояновский">
+    <svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M16.4 26.6 C 9.7 21.7, 3.1 17.3, 4.1 11.1 C 4.8 6.9, 9.7 5.2, 13.2 8.2 C 14.4 9.3, 15.3 10.8, 15.9 12.1 C 16.6 10.5, 17.8 8.7, 19.4 7.6 C 23.2 5, 27.7 7.3, 27.4 11.9 C 27, 18.2, 20.5 22, 16.4 26.6 Z"/>
+      <path d="M3 23 L 26 5"/>
+      <path d="M26 5 L 21.1 6 M26 5 L 25.1 10.7"/>
+      <path d="M3 23 L 6.7 22 M3 23 L 5 26.2"/>
+    </svg>
+  </a>
+  <nav class="navmenu" id="navmenu">
+    <a class="nav" href="/#istorii">Все истории</a>
+    <a class="nav" href="zayavka.html">Записаться</a>
+    <a class="nav" href="/en/">RU / EN</a>
+  </nav>
+  <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="navmenu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<main>
+<article class="hscroll" id="hscroll">
+  <div class="hpin" id="hpin">
+    <div class="htrack" id="htrack">
+
+      <!-- Начало ленты: миниатюра, имена, описание. -->
+      <section class="pan pan--intro">
+        <div class="thumb ph" style="aspect-ratio:3/2">
+          <img src="img/zn/zn-cover.webp" alt="Женя и Никита на набережной Невы" width="1200" height="800" fetchpriority="high">
+        </div>
+        <h1 class="h2 fu">Женя и Никита</h1>
+        <p class="lead fu d1">Один вечер: с восьми, когда солнце легло вдоль Невского, до полуночи у разведённых мостов. Никита нёс её через дорогу, Женя смеялась так, что я перестал считать кадры.</p>
+        <div class="meta">
+          <p class="cap fu d2" style="margin:0">Петербург · <time datetime="2021-07-17">17 июля 2021</time></p>
+          <p class="cap fu d2" style="margin:0">978 кадров за вечер · здесь 20</p>
+          <p class="cap fu d3" style="margin:0">Прокрутка — вправо</p>
+        </div>
+      </section>
+
+      <!-- Кадры. Единая высота, центр по вертикали (см. story.css .htrack). -->
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-01.webp" alt="Никита несёт Женю через Невский на закате" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-02.webp" alt="Ноги двоих и длинные тени на пешеходном переходе" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-03.webp" alt="Никита несёт Женю через перекрёсток, Петербург" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-04.webp" alt="Женя тянется к пятну света на колонне" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-05.webp" alt="Женя смеётся через плечо Никиты" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-06.webp" alt="Женя прячет лицо в белых пионах" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-07.webp" alt="Поцелуй в зарослях плюща" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-08.webp" alt="Двое у стены, заросшей плющом" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-09.webp" alt="Никита кружит Женю, волосы волной" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-10.webp" alt="Никита несёт Женю навстречу низкому солнцу" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-11.webp" alt="Поцелуй в арке, свет сквозь решётку" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-12.webp" alt="Женя одна у жёлтой стены во дворе" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-13.webp" alt="Женя и Никита сидят на брусчатке у старой Волги" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-14.webp" alt="Букет пионов с красной лентой в руке на ходу" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-15.webp" alt="Женя поднимает букет над пустым проспектом" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-16.webp" alt="Поцелуй на набережной против закатного солнца" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-17.webp" alt="Силуэты двоих на мосту на фоне гаснущего неба" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-18.webp" alt="Женя вскинула руки над Невой" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <figure class="fr v">
+        <div class="ph"><img src="img/zn/zn-19.webp" alt="Поцелуй крупно, её ладонь с кольцом у его лица" loading="lazy" width="1000" height="1500"></div>
+      </figure>
+
+      <figure class="fr h">
+        <div class="ph"><img src="img/zn/zn-20.webp" alt="Женя смеётся, Никита за плечом, ночная набережная" loading="lazy" width="1500" height="1000"></div>
+      </figure>
+
+      <!-- Конец ленты: связь и заявка. -->
+      <section class="pan pan--end">
+        <p class="lbl fu">Съёмка</p>
+        <h2 class="h3 fu d1"><a href="zayavka.html" style="background-image:none">Записаться на съёмку</a></h2>
+        <div class="contacts">
+          <p class="lbl fu d2">Связь</p>
+          <a class="fu d2" href="https://t.me/troyanovsky">Телеграм</a>
+          <a class="fu d2" href="mailto:hello@troyanovsky.photo">hello@troyanovsky.photo</a>
+          <a class="fu d3" href="tel:+79119999999">+7 911 999‑99‑99</a>
+        </div>
+        <div class="panfoot">
+          <p class="cap">Иван Трояновский · инди-фотограф · снимаю по всему миру</p>
+          <p class="cap" style="margin-top:4px"><a href="/#istorii">Все истории</a></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</article>
+</main>
+
+<div class="hbar" aria-hidden="true"><i></i></div>
+<p class="cap hcount" id="hcount" aria-hidden="true">01 / 20</p>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/story.js"></script>
+</body>
+</html>

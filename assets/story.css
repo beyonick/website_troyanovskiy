@@ -1,0 +1,94 @@
+/* story.css — страница одной истории: весь контент в горизонтальной ленте.
+   Опирается на base.css (токены § 3–4) и DESIGN.md § 5–7.
+
+   Расхождения с DESIGN.md названы в шапке story-zhenya-nikita.html и здесь:
+   — § 5 «плотных экранов нет» / «одно изображение во весь экран»: в ленте
+     одновременно видно 2–4 кадра. Это условие формата, а не вкусовое решение.
+   — § 6 «подпись под кадром»: подписей на этой странице нет (правка
+     2026-09-05) — история читается только фотографиями.
+   — § 7.1/7.9 «раскрытие маской»/«кадр в руках»: на кадрах ленты выключены
+     (правка 2026-09-05) — кадры видны сразу, без входа и без hover-тилта.
+   — § 7.7 «скролл-джекинг запрещён»: позиция скролла НЕ подменяется.
+     Страница высокая, лента приколота (sticky) и едет по X от реальной
+     позиции скролла с инерционным сглаживанием (см. story.js). Полоса
+     браузера, якоря, IntersectionObserver работают. */
+
+/* overflow-x:hidden на body (base.css) делает body скролл-контейнером и
+   ломает position:sticky у ленты — кадры уезжают вместе со страницей.
+   clip обрезает так же, но контейнера прокрутки не создаёт. */
+html{overflow-x:clip}
+body.story{overflow-x:clip;background:var(--canvas)}
+
+/* Высокая обёртка: её высота = высота экрана + длина ленты по X.
+   Значение подставляет story.js; до него — просто экран. */
+.hscroll{position:relative;height:100svh}
+
+/* Приколотое окно ленты. Без JS (и на тач-вводе) — обычная горизонтальная
+   прокрутка пальцем/трекпадом, лента остаётся лентой. */
+.hpin{position:sticky;top:0;height:100svh;overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hpin::-webkit-scrollbar{display:none}
+.js .hpin{overflow:hidden}
+
+/* Полоса кадров. Вертикальные поля — то же поле страницы, что и у остальных
+   блоков сайта (§ 5, правило отступа). Лента к краю экрана не липнет.
+   Кадры центрируются по вертикали (правка 2026-09-05: было выровнено по
+   верху с разной высотой по сетке) — отсюда align-items:center. Отступ
+   между кадрами уменьшен вдвое против стандартного gutter (тоже правка
+   2026-09-05): в плотной ленте полный gutter выглядел слишком просторным. */
+.htrack{display:flex;align-items:center;gap:calc(var(--gutter) / 2);
+  height:100svh;padding:var(--page-margin);width:max-content;
+  will-change:transform}
+
+/* --band — высота полосы за вычетом полей страницы. Все кадры одной высоты
+   (правка 2026-09-05: было вразнобой по 12-строчной сетке) — --band и есть
+   эта единая высота, ширина у каждого кадра идёт от aspect-ratio. */
+.htrack{--band:calc(100svh - var(--page-margin) * 2)}
+
+/* Высота кадра ограничена сверху 1080px (правка 2026-09-05: было во всю
+   band-высоту полосы) — на высоких экранах кадры больше не растягиваются
+   на весь рост полосы. На низких экранах min() всё равно ужимает кадр под
+   --band, чтобы не вылезал за поля. Центрирование не тронуто — даёт его
+   align-items:center на .htrack, кадр просто ниже, чем раньше. */
+.fr{flex:0 0 auto;height:min(var(--band),1080px)}
+.fr.v{aspect-ratio:2 / 3}
+.fr.h{aspect-ratio:3 / 2}
+.fr .ph{height:100%;aspect-ratio:auto}
+
+/* Панель — интро и контакты. Ширина фиксированная, текст не растягивается. */
+.pan{flex:0 0 auto;height:var(--band);width:min(46vw,560px);
+  display:flex;flex-direction:column;justify-content:flex-end}
+.pan--intro{width:min(52vw,660px)}
+.pan .thumb{width:min(60%,300px)}
+.pan .h2{margin-top:40px}
+.pan .lead{margin-top:24px;max-width:34ch}
+.pan .meta{margin-top:40px;display:flex;flex-direction:column;gap:6px}
+
+.pan--end{justify-content:flex-end}
+.pan--end .h3{margin-top:12px}
+.pan--end .contacts{margin-top:64px;display:flex;flex-direction:column;gap:14px}
+.pan--end .contacts a{font-size:17px;line-height:1.6}
+.pan--end .panfoot{margin-top:64px}
+
+/* Волосок прогресса по низу экрана. Единственная линия на странице (§ 3). */
+.hbar{position:fixed;left:0;right:0;bottom:0;height:1px;background:var(--hairline);z-index:40}
+.hbar i{display:block;height:1px;width:0;background:var(--ink);transform-origin:0 50%}
+
+/* Счётчик кадров у правого края — служебный слой 11px (§ 4). */
+.hcount{position:fixed;right:var(--page-margin);bottom:28px;z-index:40;
+  font-variant-numeric:tabular-nums}
+
+@media (max-width:768px){
+  /* Полоса на мобильном ограничена не только высотой экрана, но и его шириной:
+     вертикальный кадр (2:3) на всю band-высоту должен помещаться по ширине
+     целиком, иначе кадр никогда не виден полностью. Горизонтальные при этом
+     шире экрана — их проходят свайпом, как панораму. */
+  .htrack{--band:min(calc(100svh - var(--page-margin) * 2 - 56px), calc((100vw - var(--page-margin) * 2) * 1.5))}
+  .pan,.pan--intro{width:82vw}
+  .pan .thumb{width:70%}
+  .hcount{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .htrack{will-change:auto}
+}
