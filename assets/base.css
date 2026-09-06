@@ -59,7 +59,11 @@ a:hover{background-size:100% 1px;color:var(--ink)}
 .reveal>.inner{transform:scale(1.04)}
 .reveal.in{animation:rv 900ms var(--ease-reveal) forwards}
 .reveal.in>.inner{animation:sc 1200ms var(--ease-reveal) forwards}
-@keyframes rv{to{clip-path:inset(0 0 0 0)}}
+/* Конечное состояние маски раскрыто по трём сторонам за пределы бокса —
+   иначе clip-path срезал бы мягкую тень hover-эффекта (§7.9, тень добавлена
+   2026-09-06). Верхняя кромка по-прежнему доходит ровно до 0 — вайп сверху
+   вниз не меняется. */
+@keyframes rv{to{clip-path:inset(0 -400px -400px -400px)}}
 @keyframes sc{to{transform:scale(1)}}
 
 /* Счётчики — § 7.3 */

@@ -1,5 +1,6 @@
 /* photo-tilt — hover-эффект кадров (DESIGN.md §7.9).
-   Дублируется в _base.css; трансформ ставит photo-tilt.js покадрово. */
-[data-tilt]{will-change:transform;transform-origin:50% 50%}
+   Дублируется в _base.css; трансформ и тень ставит photo-tilt.js покадрово.
+   Тень — расхождение с §3/§6, зафиксировано в DESIGN.md 2026-09-06. */
+[data-tilt]{will-change:transform,box-shadow;transform-origin:50% 50%}
 [data-tilt] img{backface-visibility:hidden}
-@media (prefers-reduced-motion:reduce){[data-tilt]{transform:none!important}}
+@media (prefers-reduced-motion:reduce){[data-tilt]{transform:none!important;box-shadow:none!important}}
