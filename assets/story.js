@@ -35,16 +35,22 @@
 
   function measure() {
     max = Math.max(0, track.scrollWidth - pin.clientWidth);
+    // Позиции кадров снимаются в обоих режимах: на тач-вводе раскрытие
+    // ведёт нативный scroll (см. обработчик pin ниже), но без measureSpots()
+    // здесь sweepReveals() всегда получал бы пустой spots и не открыл бы
+    // ни одного кадра — раньше здесь был ранний return до этой строки,
+    // и на мобильном лента оставалась нераскрытой навсегда.
+    measureSpots();
     if (touch) {
       scroller.style.height = '';
       track.style.transform = '';
+      sweepReveals(pin.scrollLeft);
       return;
     }
     // Высота обёртки = экран + длина ленты: сколько пикселей вправо,
     // столько же пикселей вниз.
     scroller.style.height = (pin.clientHeight + max) + 'px';
     setTarget();
-    measureSpots();
     sweepReveals(current);
   }
 
@@ -80,18 +86,47 @@
     requestAnimationFrame(raf);
   }
 
-  // Раскрытие текста (§ 7 п. 1-бис, туда-обратно, окно 12% с обеих сторон —
-  // не менялось). Наблюдатель смотрит внутрь окна ленты — вход здесь
-  // горизонтальный, но IntersectionObserver с root: .hpin ловит его так же,
-  // как вертикальный.
-  var textIO = null;
+  // Раскрытие текста (§ 7 п. 1-бис, переписан 2026-09-07: фейда больше нет,
+  // текст выезжает построчно из маски — то же правило, что на всех страницах).
+  // Нарезка строк и снятие доигравшей маски берутся из site.js, чтобы техника
+  // была одна. Раскрывается один раз и назад не закрывается — как кадры.
+  var lines = Array.prototype.slice.call(track.querySelectorAll('.lines'));
+  var L = window.SITE_LINES;
+  if (L) lines.forEach(L.split);
+
+  function showLines(el) {
+    if (el.classList.contains('in')) return;
+    el.classList.add('in');
+    if (L) L.done(el);
+  }
+
+  // Наблюдатель смотрит внутрь окна ленты — вход здесь горизонтальный,
+  // но IntersectionObserver с root: .hpin ловит его так же, как вертикальный.
   if ('IntersectionObserver' in window) {
-    textIO = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { e.target.classList.toggle('in', e.isIntersecting); });
+    var textIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        showLines(e.target);
+        textIO.unobserve(e.target);
+      });
     }, { root: pin, rootMargin: '0px 12% 0px 12%', threshold: 0.08 });
-    track.querySelectorAll('.fu').forEach(function (el) { textIO.observe(el); });
+    lines.forEach(function (el) { textIO.observe(el); });
+
+    // Та же страховка, что в site.js: если наблюдатель по какой-то причине
+    // не сработал, текст не должен остаться в маске навсегда — раз в 600ms
+    // сами смотрим геометрию относительно окна ленты.
+    (function sweepText() {
+      var left = 0;
+      lines.forEach(function (el) {
+        if (el.classList.contains('in')) return;
+        var r = el.getBoundingClientRect(), p = pin.getBoundingClientRect();
+        if (r.left < p.right && r.right > p.left - 1) showLines(el);
+        else left++;
+      });
+      if (left) setTimeout(sweepText, 600);
+    })();
   } else {
-    track.querySelectorAll('.fu').forEach(function (el) { el.classList.add('in'); });
+    lines.forEach(showLines);
   }
 
   // Hover-тилт с тенью (§ 7.9) — тот же photo-tilt.js, что на главной, без
@@ -100,7 +135,9 @@
   // только после того, как раскрытие доиграно — см. ready().
   var tilt = (typeof initPhotoTilt === 'function') ? initPhotoTilt() : null;
   // Именно массив, а не NodeList: ниже нужны map и запись masks[i] = null.
-  var masks = Array.prototype.slice.call(track.querySelectorAll('.fr .reveal'));
+  // Кроме кадров ленты (.fr) сюда же попадает фото в карточке заявки
+  // (.endcard) — оно того же приёма (§7.1/§7.9), просто не в общем ряду.
+  var masks = Array.prototype.slice.call(track.querySelectorAll('.fr .reveal, .endcard .reveal'));
 
   function ready(mask) {
     if (mask.classList.contains('ready')) return;

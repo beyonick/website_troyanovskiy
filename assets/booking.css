@@ -102,13 +102,14 @@
    жёлтая обводка — цвет, которого в системе нет (§ 3). */
 .bk-main h2[tabindex]:focus{outline:none}
 
-/* Появление шага — тихий фейд из § 7 п. 1-бис, тот же .fu, но одноразовый. */
-.stepbody{opacity:0;transform:translateY(10px);animation:bkin 900ms var(--ease-reveal) forwards}
-@keyframes bkin{to{opacity:1;transform:none}}
+/* Появление шага — та же маска, что и везде (§ 7, редакция 2026-09-07:
+   фейда на сайте нет, только раскрытие маской, скорость одна). */
+.stepbody{clip-path:inset(100% 0 0 0);animation:bkin var(--dur-reveal) var(--ease-reveal) forwards}
+@keyframes bkin{to{clip-path:inset(0 -400px -400px -400px)}}
 
 @media (prefers-reduced-motion:reduce){
   .bar::after{animation:none;transform:none;width:100%}
-  .stepbody{animation:none;opacity:1;transform:none}
+  .stepbody{animation:none;clip-path:none}
 }
 
 /* § 11. Сайдбар схлопывается, шаги заменяются полосой прогресса,

@@ -163,10 +163,9 @@
     // у всех её кадров top одинаковый и всегда в пределах экрана.
     function ownHere(el) { return !el.closest('.htrack'); }
     var once = Array.prototype.slice.call(document.querySelectorAll('.reveal, .rise')).filter(ownHere);
-    var fu = Array.prototype.slice.call(document.querySelectorAll('.fu')).filter(ownHere);
 
     if (reduce || !('IntersectionObserver' in window)) {
-      once.concat(fu).forEach(function (el) { el.classList.add('in'); });
+      once.forEach(function (el) { el.classList.add('in'); markDone(el); });
       return;
     }
 
@@ -175,7 +174,14 @@
     function reveal(el) {
       if (el.classList.contains('in')) return;
       el.classList.add('in');
+      markDone(el);
       left--;
+    }
+    // Доигравшая маска снимается совсем: clip-path, оставленный навсегда,
+    // режет миниатюры и тени, вылетающие за блок на hover (§7.9).
+    function markDone(el) {
+      if (!el.classList.contains('reveal')) return;
+      setTimeout(function () { el.classList.add('done'); }, 2600);
     }
 
     var io = new IntersectionObserver(function (entries) {
@@ -206,16 +212,195 @@
       if (left) setTimeout(sweep, 600);
     }
     setTimeout(sweep, 600);
-
-    // Текст (§ 7 п. 1-бис) — фейд работает в обе стороны: класс .in снимается,
-    // когда блок выходит из кадра, и появляется заново при возврате.
-    var ioFu = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        e.target.classList.toggle('in', e.isIntersecting);
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.02 });
-    fu.forEach(function (el) { ioFu.observe(el); });
   }
+
+  /* — Текст построчно из маски (§ 7.1-бис) — */
+
+  // Разбор исходной разметки в токены. Слово — токен; вложенный тег
+  // (ссылка, <time>, <em>) — тоже один токен и переносится целиком, чтобы
+  // разрезание строк не разрывало разметку. <br> — жёсткая граница строки.
+  function tokenize(el) {
+    if (!el.dataset.raw) el.dataset.raw = el.innerHTML;
+    var src = document.createElement('div');
+    src.innerHTML = el.dataset.raw;
+
+    var tokens = [];
+    Array.prototype.forEach.call(src.childNodes, function (node) {
+      if (node.nodeType === 3) {
+        (node.nodeValue || '').split(/\s+/).forEach(function (w) {
+          if (w) tokens.push({ word: w });
+        });
+        return;
+      }
+      if (node.nodeType !== 1) return;
+      if (node.tagName === 'BR') { tokens.push({ br: true }); return; }
+      tokens.push({ node: node });
+    });
+    return tokens;
+  }
+
+  function tokenNode(t) {
+    if (t.node) return t.node.cloneNode(true);
+    return document.createTextNode(t.word);
+  }
+
+  function splitLines(el) {
+    var tokens = tokenize(el);
+    if (!tokens.length) return;
+
+    // Мерим переносы: раскладываем токены без обёрток и смотрим, у кого
+    // совпадает offsetTop — это и есть визуальная строка при текущей ширине.
+    el.textContent = '';
+    var probes = [], seg = 0;
+    tokens.forEach(function (t) {
+      if (t.br) { seg++; probes.push({ br: true, seg: seg }); return; }
+      var s = document.createElement('span');
+      s.style.display = 'inline-block';
+      s.appendChild(tokenNode(t));
+      el.appendChild(s);
+      // Пробел — отдельным узлом между пробами, как и в итоговой сборке:
+      // засунутый внутрь инлайн-блока, он не схлопывается и мерил бы строку
+      // шире, чем она потом отрисуется.
+      el.appendChild(document.createTextNode(' '));
+      probes.push({ span: s, seg: seg, token: t });
+    });
+
+    var lines = [];
+    var lastTop = null, lastSeg = null;
+    probes.forEach(function (p) {
+      if (p.br) return;
+      var top = p.span.offsetTop;
+      if (lastTop === null || Math.abs(top - lastTop) > 1 || p.seg !== lastSeg) {
+        lines.push([]);
+        lastTop = top;
+        lastSeg = p.seg;
+      }
+      lines[lines.length - 1].push(p.token);
+    });
+
+    // Сдвиг стаггера для соседей в ряду: d1/d2/d3 сдвигают всю строку блока,
+    // чтобы соседние блоки в одной строке не открывались одновременно.
+    var base = el.classList.contains('d3') ? 3
+             : el.classList.contains('d2') ? 2
+             : el.classList.contains('d1') ? 1 : 0;
+
+    el.textContent = '';
+    lines.forEach(function (lineTokens, i) {
+      var ln = document.createElement('span');
+      ln.className = 'ln';
+      var inner = document.createElement('span');
+      inner.style.setProperty('--i', base + i);
+      lineTokens.forEach(function (t, j) {
+        if (j) inner.appendChild(document.createTextNode(' '));
+        inner.appendChild(tokenNode(t));
+      });
+      ln.appendChild(inner);
+      el.appendChild(ln);
+    });
+    el.dataset.lineCount = lines.length + base;
+  }
+
+  // Доигравшая строка снимает маску: при line-height .8 свисающие штрихи
+  // (у, р, ц, щ) не помещаются в строку, и overflow:hidden, оставленный
+  // навсегда, их срезал бы. На входе маска ещё на месте — ничего не
+  // подглядывает. Ждём каждую строку по её собственной задержке.
+  function linesDone(el) {
+    var lns = el.querySelectorAll('.ln');
+    Array.prototype.forEach.call(lns, function (ln, i) {
+      var inner = ln.firstChild;
+      var idx = inner && inner.style ? parseInt(inner.style.getPropertyValue('--i'), 10) : i;
+      if (isNaN(idx)) idx = i;
+      function done() { ln.classList.add('done'); }
+      // Основной путь — по концу самого перехода: если вкладка была в фоне и
+      // анимация стояла, маска снимется ровно тогда, когда строка доехала,
+      // а не по часам. Таймер — страховка, если transitionend не придёт.
+      if (inner && inner.addEventListener) {
+        inner.addEventListener('transitionend', function (e) {
+          if (e.propertyName === 'transform') done();
+        });
+      }
+      setTimeout(done, 1800 + idx * 130 + 400);
+    });
+  }
+
+  function bindLines() {
+    function ownHere(el) { return !el.closest('.htrack'); }
+    var els = Array.prototype.slice.call(document.querySelectorAll('.lines')).filter(ownHere);
+    if (!els.length) return;
+
+    els.forEach(splitLines);
+
+    if (reduce) {
+      els.forEach(function (el) { el.classList.add('in'); linesDone(el); });
+      return;
+    }
+
+    var left = els.length;
+    function reveal(el) {
+      if (el.classList.contains('in')) return;
+      el.classList.add('in');
+      el.dataset.revealed = '1';
+      linesDone(el);
+      left--;
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          reveal(e.target);
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+      els.forEach(function (el) { io.observe(el); });
+    } else {
+      els.forEach(reveal);
+    }
+
+    // Та же страховка, что у bindReveals(): первое срабатывание
+    // IntersectionObserver не гарантирует, что он и дальше будет ловить
+    // каждый заголовок исправно. Заголовок, навсегда зажатый в маске
+    // (текст невидим), недопустим — это хуже, чем нераскрытый кадр.
+    function sweep() {
+      if (!left) return;
+      els.forEach(function (el) {
+        if (el.classList.contains('in')) return;
+        var r = el.getBoundingClientRect();
+        if (r.top < innerHeight * 0.98) reveal(el);
+      });
+      if (left) setTimeout(sweep, 600);
+    }
+    setTimeout(sweep, 600);
+
+    // Заголовки многострочные — перенос слов зависит от ширины экрана,
+    // поэтому строки режем заново при resize (ориентация, ресайз окна).
+    var t;
+    window.addEventListener('resize', function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        els.forEach(function (el) {
+          var wasIn = el.dataset.revealed === '1';
+          splitLines(el);
+          if (wasIn) {
+            el.classList.add('no-anim');
+            el.classList.add('in');
+            // Строки уже открыты — маску снимаем сразу, без повторного показа.
+            Array.prototype.forEach.call(el.querySelectorAll('.ln'), function (ln) {
+              ln.classList.add('done');
+            });
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () { el.classList.remove('no-anim'); });
+            });
+          }
+        });
+      }, 150);
+    });
+  }
+
+  // Лента истории (.htrack) раскрывается своим наблюдателем в story.js —
+  // отдаём ему ту же нарезку строк и то же снятие маски, чтобы правило
+  // появления на всех страницах было одно.
+  window.SITE_LINES = { split: splitLines, done: linesDone };
 
   /* — Кадр за курсором в списках (§ 7.4) — */
 
@@ -323,6 +508,7 @@
     bindHeroName();
     bindNav();
     bindReveals();
+    bindLines();
     bindFollow('.bigindex', '.brow');
     bindFollow('.voicewrap', '.voice');
     bindSmoothScroll();

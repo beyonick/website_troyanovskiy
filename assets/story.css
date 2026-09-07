@@ -15,11 +15,14 @@
      после того, как раскрытие доиграно (по прямой просьбе 2026-09-05).
      История правок: анимации не было → translateY 700ms → translateY 7s
      с 2/3 экрана → маска как на главной.
-   — § 8 «карточек не существует» и «залитая кнопка ровно одна»: блок
-     заявки в конце ленты (.endcard) нарушает оба — карточка 16:9 в рамке
-     1px с залитой кнопкой «Напишите», по прямой просьбе 2026-09-05.
-     Тёмных секций на странице нет: чёрная панель контактов, стоявшая тут
-     до него, снята вместе с ним, так что расхождение с § 3 закрыто.
+   — § 8 «карточек не существует»: блок заявки в конце ленты (.endcard) —
+     карточка 16:9 в рамке 1px, по прямой просьбе 2026-09-05, взамен чёрной
+     панели контактов (расхождение с § 3 тем же закрыто — тёмных секций на
+     странице больше нет). Залитой кнопки внутри неё больше нет (была,
+     снята 2026-09-07): действие — тот же `.heroaction`, что на главной под
+     героем, без заливки. «Только такие кнопки используем на сайте» —
+     прямая просьба, оставлена как общее правило, не только для этой
+     страницы.
    — § 7.7 «скролл-джекинг запрещён»: позиция скролла НЕ подменяется.
      Страница высокая, лента приколота (sticky) и едет по X от реальной
      позиции скролла с инерционным сглаживанием (см. story.js). Полоса
@@ -76,9 +79,11 @@ body.story{overflow-x:clip;background:var(--canvas)}
 .fr .ph{aspect-ratio:auto}
 
 /* Тилт (§ 7.9) включается только на доигравшем кадре — data-tilt вешает
-   story.js по animationend. Страховка на случай, если атрибут окажется на
-   кадре раньше времени: пока нет .ready, ни наклона, ни тени. */
-.fr .mask:not(.ready){transform:none!important;box-shadow:none!important}
+   story.js по animationend. Правило то же и для фото в карточке заявки
+   (.endcard, см. ниже) — оба раскрываются одним и тем же кодом в story.js.
+   Страховка на случай, если атрибут окажется на кадре раньше времени: пока
+   нет .ready, ни наклона, ни тени. */
+.fr .mask:not(.ready),.endcard .mask:not(.ready){transform:none!important;box-shadow:none!important}
 
 /* Панель — интро. Высота такая же, как у кадра (правка 2026-09-05: раньше
    была во всю band-высоту, текст «повисал» ниже нижнего края фотографий) —
@@ -98,29 +103,41 @@ body.story{overflow-x:clip;background:var(--canvas)}
   border:1px solid var(--ink);background:var(--canvas);color:var(--body);
   display:flex;align-items:center;justify-content:center;
   padding:var(--page-margin)}
-.endcard-in{max-width:46ch;text-align:center;
-  display:flex;flex-direction:column;align-items:center}
-.endcard .lead{margin-top:24px}
+.endcard-in{display:flex;align-items:center;gap:56px;max-width:64ch}
+.endcard .lead{max-width:42ch}
 
-/* Кнопка «Напишите» — вторая залитая кнопка на сайте (§ 8 разрешает ровно
-   одну, расхождение названо в шапке html). Ховер не меняет цвет заливки,
-   а вытесняет её белым снизу вверх — тем же движением, что раскрытие
-   кадра (§ 7.1): маска, а не проявление. Рамка стоит всегда, поэтому
-   на инверсии кнопка не «схлопывается» и не прыгает. */
-.ecbtn{position:relative;overflow:hidden;display:inline-block;margin-top:48px;
-  border:1px solid var(--ink);background:var(--ink);background-image:none;
-  padding:22px 44px;font-size:11px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--on-dark)}
-.ecbtn::before{content:"";position:absolute;inset:0;background:var(--canvas);
-  transform:translateY(101%);transition:transform 520ms var(--ease-reveal)}
-.ecbtn span{position:relative;z-index:1;transition:color 520ms var(--ease-reveal)}
-.ecbtn:hover{background:var(--ink);background-image:none;color:var(--on-dark)}
-.ecbtn:hover::before{transform:translateY(0)}
-.ecbtn:hover span{color:var(--ink)}
+/* Фото сбоку от текста — IMG_0379, чуть под углом, как памятная карточка,
+   а не ещё один кадр ленты (правка 2026-09-07). Раскрытие и hover-тилт с
+   тенью — те же .mask.reveal[data-tilt], что и у кадров ленты, без единого
+   переопределения (§ 7.1, § 7.9). Рамка снимка — не CSS: она уже впечатана
+   в сам файл (край полароидного кадра), поэтому рамки, тени в покое и
+   object-fit:cover здесь нет — соотношение сторон блока равно фактическому
+   соотношению картинки, чтобы «cover» не откусил белую кайму. Наклон стоит
+   на внешней, нетронутой тилтом обёртке: тилт крутит только .mask внутри,
+   поворот .ecphoto остаётся на месте до и после наведения. Класса .fu на
+   этом div быть не должно: `.fu.in{transform:none}` из base.css специфичнее
+   одного класса `.ecphoto` и стирает поворот — уже наступали, держим здесь. */
+.ecphoto{flex:0 0 auto;width:min(30vw,340px);aspect-ratio:741 / 900;
+  transform:rotate(-5deg)}
+.ecphoto .mask,.ecphoto .ph{height:100%}
+.ecphoto .ph{aspect-ratio:auto}
+.ecphoto .ph img{object-fit:contain}
 
-/* Второй уровень — текстовые ссылки с растущей линией (§ 8), не кнопки:
-   вес у них должен быть заметно ниже, чем у «Напишите». */
-.ecsec{margin-top:40px;display:flex;gap:32px;justify-content:center}
+.ectext{flex:1 1 auto;min-width:0}
+.ectext .lead{margin-top:24px}
+
+/* Действие — тот же .heroaction, что и на главной под героем (site.css):
+   лейбл + заголовок-ссылка, сдвиг на 10px на ховере, без заливки. Прямая
+   просьба 2026-09-07: «только такие кнопки используем на сайте» — вторая
+   залитая кнопка, стоявшая здесь раньше, снята.
+   Размер заголовка увеличен (правка, тот же день): был мельче стандартного
+   .h3 (28–44px), теперь заметно крупнее его — фото рядом выросло, и мелкий
+   заголовок терялся на фоне карточки. Класс на элементе остаётся h3 (его
+   держит hover-правило .heroaction .h3 в site.css), крупнее — только здесь. */
+.ectext .heroaction .h3{font-size:clamp(44px,4.6vw,88px)}
+
+/* Второй уровень — текстовые ссылки с растущей линией (§ 8), не кнопки. */
+.ecsec{margin-top:40px;display:flex;gap:32px}
 .ecsec a{font-size:11px;font-weight:500;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink)}
 
@@ -143,8 +160,11 @@ body.story{overflow-x:clip;background:var(--canvas)}
      шире экрана, и текст пришлось бы читать свайпом. Ширина как у панелей,
      высота — по содержимому в пределах полосы. */
   .endcard{aspect-ratio:auto;width:86vw;padding:32px 20px}
-  .ecbtn{margin-top:36px}
-  .ecsec{margin-top:28px;gap:24px}
+  /* Фото и текст на мобильном не помещаются в ряд — фото поднимается над
+     текстом, наклон остаётся тем же самым. */
+  .endcard-in{flex-direction:column;text-align:center;gap:24px;max-width:none}
+  .ecphoto{width:34vw}
+  .ecsec{margin-top:28px;gap:24px;justify-content:center}
   .hcount{display:none}
 }
 

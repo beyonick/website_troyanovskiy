@@ -35,9 +35,9 @@ a:hover{background-size:100% 1px;color:var(--ink)}
 .lbl{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 .nav{font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .cap{font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 0}
-.h1{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
-.h2{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
-.h3{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.95;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.h1{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.8;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.h2{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.8;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.h3{font-family:"Cormorant Infant",Georgia,serif;font-weight:300;font-size:clamp(60px,9vw,144px);line-height:.8;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
 .q{font-family:"Cormorant Infant",Georgia,serif;font-style:italic;font-weight:300;font-size:clamp(24px,3vw,40px);line-height:1.25;color:var(--ink);margin:0;text-wrap:pretty}
 .lead{font-size:clamp(16px,1.2vw,19px);font-weight:400;line-height:1.55;letter-spacing:-.01em;color:var(--body);margin:0;max-width:54ch;text-wrap:pretty}
 .txt{font-size:15px;font-weight:400;line-height:1.65;max-width:62ch;color:var(--body);margin:0;text-wrap:pretty}
@@ -53,35 +53,76 @@ a:hover{background-size:100% 1px;color:var(--ink)}
 .btn{display:inline-block;background:var(--ink);color:var(--on-dark);border:0;border-radius:0;padding:20px 40px;font-family:inherit;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;background-image:none}
 .btn:hover{background:var(--ink);color:var(--on-dark);background-image:none}
 
-/* Раскрытие кадра — § 7.1. Запускается классом .in по IntersectionObserver.
-   Значения деликатные (§ 7): короткая амплитуда, мягкая кривая. */
+/* ЕДИНОЕ ПРАВИЛО ПОЯВЛЕНИЯ (переписано 2026-09-07 по прямой правке
+   «весь текст и фото появляются универсально, по одним правилам; никакого
+   фейда, только по маске; скорость одна»). Фейд (`.fu`, бывший § 7 п. 1-бис)
+   удалён с сайта целиком — вместе с ним снято расхождение, которое он вносил
+   в § 7.1 и § 10. Осталось три применения одной и той же маски, все на
+   `--dur-reveal` и `--ease-reveal`:
+     .reveal — кадр и любой блок: вайп clip-path снизу вверх;
+     .lines  — любой текст: построчно, строка выезжает из своей маски;
+     .rise   — счётчики: цифра выезжает из .tmask.
+   Стаггер между соседями — один: --stagger. */
+:root{--dur-reveal:1800ms;--stagger:130ms}
+
 .reveal{clip-path:inset(100% 0 0 0)}
 .reveal>.inner{transform:scale(1.04)}
-.reveal.in{animation:rv 900ms var(--ease-reveal) forwards}
-.reveal.in>.inner{animation:sc 1200ms var(--ease-reveal) forwards}
+.reveal.in{animation:rv var(--dur-reveal) var(--ease-reveal) forwards}
+.reveal.in>.inner{animation:sc var(--dur-reveal) var(--ease-reveal) forwards}
 /* Конечное состояние маски раскрыто по трём сторонам за пределы бокса —
    иначе clip-path срезал бы мягкую тень hover-эффекта (§7.9, тень добавлена
    2026-09-06). Верхняя кромка по-прежнему доходит ровно до 0 — вайп сверху
-   вниз не меняется. */
+   вниз не меняется. Доигравшая маска снимается совсем (.done из site.js):
+   иначе clip-path обрезает миниатюры, вылетающие за блок на hover. */
 @keyframes rv{to{clip-path:inset(0 -400px -400px -400px)}}
 @keyframes sc{to{transform:scale(1)}}
+.reveal.done{clip-path:none;animation:none}
 
 /* Счётчики — § 7.3 */
 .rise{display:block;transform:translateY(105%)}
-.rise.in{animation:rs 900ms var(--ease-reveal) forwards}
+.rise.in{animation:rs var(--dur-reveal) var(--ease-reveal) forwards}
 @keyframes rs{to{transform:translateY(0)}}
 
-/* Появление контента — § 7. Только текст: заголовки, лейблы, абзацы, подписи,
-   списки. Кадры этим не раскрываются — у них маска (§ 7.1). Проявление плюс
-   подъём на 10px, одна мягкая кривая, ничего резкого. Работает в обе стороны —
-   класс .in снимается при выходе из кадра, текст гаснет обратно (site.js). */
-.fu{opacity:0;transform:translateY(10px);transition:opacity 1800ms var(--ease-reveal),transform 1800ms var(--ease-reveal)}
-.fu.in{opacity:1;transform:none}
+/* Стаггер — § 7.2 и «правило ряда». Один шаг для всего: строки внутри блока
+   и соседние блоки в ряду идут через --stagger.
+   .d1/.d2/.d3 отдельным правилом (0,1,0) не хватало specificity против
+   `animation:` шортхэнда в .reveal.in/.rise.in (0,2,0) — тот неявно
+   обнуляет delay, и весь ряд кадров/счётчиков открывался разом несмотря
+   на классы d1/d2 в разметке (правка 2026-09-07). Задаём задержку прямо
+   на комбинации классов, с более высокой specificity. */
+.d1{animation-delay:var(--stagger)}
+.d2{animation-delay:calc(var(--stagger)*2)}
+.d3{animation-delay:calc(var(--stagger)*3)}
+.reveal.in.d1,.rise.in.d1{animation-delay:var(--stagger)}
+.reveal.in.d2,.rise.in.d2{animation-delay:calc(var(--stagger)*2)}
+.reveal.in.d3,.rise.in.d3{animation-delay:calc(var(--stagger)*3)}
 
-/* Стаггер — § 7.2, не больше трёх подряд */
-.d1{animation-delay:70ms}.d2{animation-delay:140ms}.d3{animation-delay:210ms}
-.fu.d1{transition-delay:70ms}.fu.d2{transition-delay:140ms}.fu.d3{transition-delay:210ms}
+/* Текст построчно из маски — § 7.1-бис (переписан 2026-09-07). Та же техника,
+   что у .namemark-line (§8), обобщённая на любой текст: заголовки, лейблы,
+   абзацы, подписи, ссылки. Строку режет DOM-обёртка .ln (overflow:hidden),
+   текст внутри идёт translateY(105%) → 0. Строки нарезает splitLines() в
+   site.js — текст многострочный и переносится по-разному на разных экранах,
+   фиксированной разметкой не взять. Номер строки приходит из JS в --i,
+   отсюда же общий стаггер.
+   Доигравшая строка снимает overflow (.done из site.js): при line-height .8
+   свисающие штрихи (у, р, ц, щ) не помещаются в строку, и маска, оставленная
+   навсегда, их срезала бы. Пока строка не доиграла — маска на месте, поэтому
+   на входе ничего не подглядывает. Так интерлиньяж остаётся ровно 80% и
+   одинаков между любой парой строк — без padding-компенсаций. */
+.lines .ln{display:block;overflow:hidden}
+.lines .ln.done{overflow:visible}
+/* nowrap обязателен: внутри .ln лежит ровно одна отмеренная строка, и если
+   она окажется хоть на пиксель шире бокса, инлайн-блок перенесёт её ещё раз
+   сам — бокс станет двойной высоты, а зазор между строками «поплывёт».
+   Именно это и был скачущий интерлиньяж (найдено 2026-09-07). */
+.lines .ln>span{display:inline-block;white-space:nowrap;transform:translateY(105%);
+  transition:transform var(--dur-reveal) var(--ease-reveal);
+  transition-delay:calc(var(--i,0) * var(--stagger))}
+.lines.in .ln>span{transform:translateY(0)}
+.lines.no-anim .ln>span{transition:none}
 
 @media (prefers-reduced-motion:reduce){
-  .reveal,.reveal>.inner,.reveal.in,.reveal.in>.inner,.rise,.rise.in,.fu,.fu.in{animation:none!important;clip-path:none!important;transform:none!important;opacity:1!important;transition:none!important}
+  .reveal,.reveal>.inner,.reveal.in,.reveal.in>.inner,.rise,.rise.in{animation:none!important;clip-path:none!important;transform:none!important;opacity:1!important;transition:none!important}
+  .lines .ln{overflow:visible!important}
+  .lines .ln>span{transform:none!important;transition:none!important}
 }
