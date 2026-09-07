@@ -109,13 +109,22 @@ a:hover{background-size:100% 1px;color:var(--ink)}
    навсегда, их срезала бы. Пока строка не доиграла — маска на месте, поэтому
    на входе ничего не подглядывает. Так интерлиньяж остаётся ровно 80% и
    одинаков между любой парой строк — без padding-компенсаций. */
-.lines .ln{display:block;overflow:hidden}
-.lines .ln.done{overflow:visible}
+/* Маска строки — clip-path, а не overflow:hidden, и с постоянным запасом на
+   выносные элементы. При line-height:.8 буквы вылезают за строку на .196em
+   вниз (у, р, ц, щ) и на .077em вверх (замерено 2026-09-07) — жёсткий бокс
+   их срезает. Прежнее решение снимало маску после доигрывания, и низ буквы
+   проявлялся рывком с задержкой; здесь запас есть с самого начала, поэтому
+   снимать нечего. clip-path выбран потому, что не трогает раскладку: 80%
+   интерлиньяжа остаются ровно 80%, без padding-компенсаций и схлопывания
+   полей. Горизонтальный запас — на строку, которая на пиксель шире бокса. */
+.lines .ln{display:block;clip-path:inset(-.14em -.5em -.26em -.5em)}
 /* nowrap обязателен: внутри .ln лежит ровно одна отмеренная строка, и если
    она окажется хоть на пиксель шире бокса, инлайн-блок перенесёт её ещё раз
    сам — бокс станет двойной высоты, а зазор между строками «поплывёт».
    Именно это и был скачущий интерлиньяж (найдено 2026-09-07). */
-.lines .ln>span{display:inline-block;white-space:nowrap;transform:translateY(105%);
+/* Стартовая позиция ниже нижней кромки маски вместе с её запасом (105% + .4em),
+   иначе верхушки букв торчали бы в этом запасе до начала подъёма. */
+.lines .ln>span{display:inline-block;white-space:nowrap;transform:translateY(calc(105% + .4em));
   transition:transform var(--dur-reveal) var(--ease-reveal);
   transition-delay:calc(var(--i,0) * var(--stagger))}
 .lines.in .ln>span{transform:translateY(0)}
@@ -123,6 +132,6 @@ a:hover{background-size:100% 1px;color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
   .reveal,.reveal>.inner,.reveal.in,.reveal.in>.inner,.rise,.rise.in{animation:none!important;clip-path:none!important;transform:none!important;opacity:1!important;transition:none!important}
-  .lines .ln{overflow:visible!important}
+  .lines .ln{clip-path:none!important}
   .lines .ln>span{transform:none!important;transition:none!important}
 }

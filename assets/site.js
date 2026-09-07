@@ -300,28 +300,10 @@
     el.dataset.lineCount = lines.length + base;
   }
 
-  // Доигравшая строка снимает маску: при line-height .8 свисающие штрихи
-  // (у, р, ц, щ) не помещаются в строку, и overflow:hidden, оставленный
-  // навсегда, их срезал бы. На входе маска ещё на месте — ничего не
-  // подглядывает. Ждём каждую строку по её собственной задержке.
-  function linesDone(el) {
-    var lns = el.querySelectorAll('.ln');
-    Array.prototype.forEach.call(lns, function (ln, i) {
-      var inner = ln.firstChild;
-      var idx = inner && inner.style ? parseInt(inner.style.getPropertyValue('--i'), 10) : i;
-      if (isNaN(idx)) idx = i;
-      function done() { ln.classList.add('done'); }
-      // Основной путь — по концу самого перехода: если вкладка была в фоне и
-      // анимация стояла, маска снимется ровно тогда, когда строка доехала,
-      // а не по часам. Таймер — страховка, если transitionend не придёт.
-      if (inner && inner.addEventListener) {
-        inner.addEventListener('transitionend', function (e) {
-          if (e.propertyName === 'transform') done();
-        });
-      }
-      setTimeout(done, 1800 + idx * 130 + 400);
-    });
-  }
+  // Маску со строки больше не снимаем: у неё постоянный запас на выносные
+  // элементы (см. .ln в base.css). Раньше маска снималась после доигрывания
+  // и низ буквы проявлялся рывком с задержкой — убрано 2026-09-07.
+  function linesDone() {}
 
   function bindLines() {
     function ownHere(el) { return !el.closest('.htrack'); }
@@ -382,12 +364,9 @@
           var wasIn = el.dataset.revealed === '1';
           splitLines(el);
           if (wasIn) {
+            // Строки уже открыты — ставим их на место без повторного показа.
             el.classList.add('no-anim');
             el.classList.add('in');
-            // Строки уже открыты — маску снимаем сразу, без повторного показа.
-            Array.prototype.forEach.call(el.querySelectorAll('.ln'), function (ln) {
-              ln.classList.add('done');
-            });
             requestAnimationFrame(function () {
               requestAnimationFrame(function () { el.classList.remove('no-anim'); });
             });
