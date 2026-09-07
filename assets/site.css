@@ -33,6 +33,16 @@ section[id]{scroll-margin-top:120px}
 .heroname{position:absolute;inset:0;z-index:2;
   display:flex;align-items:center;pointer-events:none}
 
+/* Положение имени (правка 2026-09-07, замена якоря в 3-ю колонку).
+   Блок имени центрируется по горизонтали и вертикали вьюпорта; строки
+   «Иван» и «Трояновский» внутри блока выровнены по его левому краю.
+   Прелоадер и герой правятся вместе — они обязаны совпадать 1:1.
+   РАСХОЖДЕНИЕ с DESIGN.md §8 (там зафиксировано grid-column:3 / span 8) —
+   названо вслух, файл нужно привести в соответствие. */
+.preload .grid,.heroname .grid{display:block}
+.preload .heroname-inner,.heroname .heroname-inner{grid-column:auto}
+.preload .namemark,.heroname .namemark{width:max-content;max-width:100%;margin-inline:auto}
+
 .namemark{margin:0;font-family:"Cormorant Infant",Georgia,serif;font-weight:300;
   font-size:clamp(56px,11vw,200px);line-height:.92;letter-spacing:-.02em;color:var(--on-dark)}
 .namemark-line{display:block;overflow:hidden;width:max-content}
@@ -125,7 +135,12 @@ main{position:relative;z-index:1;background:var(--canvas)}
 
 /* Адаптив — § 11 */
 @media (max-width:1024px){
-  .grid{grid-template-columns:1fr;gap:48px}
+  /* minmax(0,1fr), не 1fr: у нижнего трека min-content = ширина самого
+     длинного неразрывного токена (строки .lines с white-space:nowrap —
+     напр. «Мастер-класс» в .h3). С чистым 1fr этот токен раздувал колонку
+     шире контейнера, и весь блок съедал правое поле страницы (20px).
+     Найдено на мобилке 2026-09-07. */
+  .grid{grid-template-columns:minmax(0,1fr);gap:48px}
   .grid>*{grid-column:1!important;margin-top:0!important;margin-left:0!important;width:auto!important}
   .sec .grid[style*="margin-top"]{margin-top:64px!important}
   .bleed{width:100%!important}
