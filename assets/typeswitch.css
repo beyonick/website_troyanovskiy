@@ -1,0 +1,130 @@
+/* typeswitch.css — только для альтернативной главной (index-alt.html).
+   Переводит дисплейные роли на переменные, чтобы гарнитуру, кегль и
+   интерлиньяж можно было менять живьём, прямо на сайте.
+
+   Пока переменная не задана, работает fallback = текущее значение из
+   base.css / site.css. Значит страница без единого клика выглядит
+   ровно как боевая главная. Файл подключается ПОСЛЕ site.css. */
+
+.namemark{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-name-size,clamp(56px,11vw,200px));
+  line-height:var(--tw-name-lh,.92);
+  letter-spacing:var(--tw-name-ls,-.02em);
+}
+.h1{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-h1-size,clamp(60px,9vw,144px));
+  line-height:var(--tw-h1-lh,.8);
+  letter-spacing:var(--tw-h1-ls,-.02em);
+}
+.h2{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-h2-size,clamp(60px,9vw,144px));
+  line-height:var(--tw-h2-lh,.8);
+  letter-spacing:var(--tw-h2-ls,-.02em);
+}
+.h3{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-h3-size,clamp(60px,9vw,144px));
+  line-height:var(--tw-h3-lh,.95);
+  letter-spacing:var(--tw-h3-ls,-.02em);
+}
+.q{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-q-size,clamp(24px,3vw,40px));
+  line-height:var(--tw-q-lh,1.25);
+  letter-spacing:var(--tw-q-ls,0);
+}
+.num{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-num-size,clamp(80px,13vw,260px));
+  line-height:var(--tw-num-lh,.86);
+  letter-spacing:var(--tw-num-ls,-.03em);
+}
+.bname{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-row-size,clamp(36px,4.6vw,72px));
+  line-height:var(--tw-row-lh,1);
+  letter-spacing:var(--tw-row-ls,-.015em);
+}
+.footname{
+  font-family:var(--tw-font,"Cormorant Infant",Georgia,serif);
+  font-weight:var(--tw-weight,300);
+  font-size:var(--tw-foot-size,clamp(64px,13vw,320px));
+  line-height:var(--tw-foot-lh,.88);
+  letter-spacing:var(--tw-foot-ls,-.02em);
+}
+
+/* ——— Пульт. Служебный слой поверх сайта: та же графика системы —
+   белое поле, волосяные линии, капс Inter, ноль скруглений и теней. ——— */
+
+.tw{position:fixed;right:0;bottom:0;z-index:900;font-family:Inter,system-ui,sans-serif;
+  color:var(--ink);-webkit-font-smoothing:antialiased}
+.tw *{box-sizing:border-box}
+
+.tw-toggle{display:block;background:var(--canvas);color:var(--ink);border:1px solid var(--ink);
+  border-right:0;border-bottom:0;padding:14px 20px;font:inherit;font-size:11px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;margin-left:auto;
+  transition:background 200ms var(--ease-ui),color 200ms var(--ease-ui)}
+.tw-toggle:hover{background:var(--ink);color:var(--on-dark)}
+
+.tw-body{display:none;width:340px;max-height:78vh;overflow-y:auto;background:var(--canvas);
+  border:1px solid var(--ink);border-right:0;border-bottom:0;padding:20px 20px 24px}
+.tw.open .tw-body{display:block}
+
+.tw-t{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 10px}
+.tw-sec{border-top:1px solid var(--hairline);padding-top:16px;margin-top:16px}
+.tw-sec:first-child{border-top:0;padding-top:0;margin-top:0}
+
+.tw-font{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;
+  text-align:left;background:none;border:0;border-bottom:1px solid var(--hairline);padding:9px 0;
+  cursor:pointer;color:var(--ink);font-family:inherit}
+.tw-font:last-child{border-bottom:0}
+.tw-font .s{font-size:26px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tw-font .m{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap}
+.tw-font[aria-pressed="true"] .m{color:var(--ink)}
+.tw-font[aria-pressed="true"] .m::after{content:" ●";font-size:8px}
+
+.tw-tabs{display:flex;flex-wrap:wrap;gap:9px 14px;margin-bottom:16px}
+.tw-tab{background:none;border:0;border-bottom:1px solid transparent;padding:0 0 3px;cursor:pointer;
+  color:var(--muted);font-family:inherit;font-size:10px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase}
+.tw-tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+.tw-ctl{margin-bottom:14px}
+.tw-head{display:flex;justify-content:space-between;align-items:baseline}
+.tw-head span{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.tw-head .k{color:var(--muted)}
+.tw-head .v{color:var(--ink);font-variant-numeric:tabular-nums}
+.tw input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;
+  background:var(--hairline);margin:9px 0 0;cursor:pointer}
+.tw input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+  background:var(--ink);border:0;border-radius:0}
+.tw input[type=range]::-moz-range-thumb{width:11px;height:11px;background:var(--ink);border:0;border-radius:0}
+
+.tw-btns{display:flex;gap:8px;flex-wrap:wrap}
+.tw-btn{background:none;border:1px solid var(--ink);color:var(--ink);padding:10px 14px;
+  font-family:inherit;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;transition:background 200ms var(--ease-ui),color 200ms var(--ease-ui)}
+.tw-btn:hover{background:var(--ink);color:var(--on-dark)}
+
+.tw-css{width:100%;min-height:96px;border:1px solid var(--hairline);padding:10px;margin-top:10px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.6;
+  color:var(--body);background:var(--canvas);resize:vertical}
+
+.tw-note{font-size:10px;line-height:1.5;letter-spacing:.04em;color:var(--muted);margin:10px 0 0}
+
+@media (max-width:640px){
+  .tw-body{width:100vw;max-height:70vh}
+}
+@media print{ .tw{display:none} }
