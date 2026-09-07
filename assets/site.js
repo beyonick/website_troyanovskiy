@@ -307,7 +307,14 @@
 
   function bindLines() {
     function ownHere(el) { return !el.closest('.htrack'); }
-    var els = Array.prototype.slice.call(document.querySelectorAll('.lines')).filter(ownHere);
+    // Базовая проза (.lead/.txt) не анимируется — карвинг-аут из DESIGN.md
+    // §7.1 (2026-09-07, по прямой просьбе «базовый текст не анимируется»).
+    // В разметке класс .lines на неё не ставят; здесь фиксируем то же
+    // в коде — даже если .lines попадёт на .lead/.txt, splitLines её не
+    // тронет и маску не повесит.
+    function basicProse(el) { return el.classList.contains('lead') || el.classList.contains('txt'); }
+    var els = Array.prototype.slice.call(document.querySelectorAll('.lines'))
+      .filter(ownHere).filter(function (el) { return !basicProse(el); });
     if (!els.length) return;
 
     els.forEach(splitLines);
